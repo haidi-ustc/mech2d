@@ -691,7 +691,6 @@ def post_elastic(args):
     skip=args.skip
     order=args.order
     elat=loadfn(felastic)
-    print(type(elat))
     if isinstance(elat,Elastic):
        pass
     else:
@@ -721,7 +720,6 @@ def init_elastic(args):
        print('Default parameter for Elastic calculation init:')
        print(args)
     elat=Elastic(structure,strategy=strategy,properties=properties,outdir=outdir,verbose=verbose)
-    print(elat)
     elat.get_deformed_structure(numb_points,max_lag_strain,direction=direction,back=back)
     #--------------------------------------------------------------------------------------------------
 

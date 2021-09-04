@@ -21,8 +21,8 @@ install_requires=[]
 
 setuptools.setup(
     name=NAME,
-    #use_scm_version={'write_to': 'mech2d/_version.py'},
-    #setup_requires=['setuptools_scm'],
+    use_scm_version={'write_to': 'mech2d/_version.py'},
+    setup_requires=['setuptools_scm'],
     author="Haidi Wang",
     author_email="haidi@hfut.edu.cn",
     description="mech2d: a calculator for two dimensional material mechanical properties",

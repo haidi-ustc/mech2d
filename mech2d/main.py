@@ -8,7 +8,14 @@ import itertools
 from mech2d.mechanics import init_elastic,post_elastic
 from mech2d.calculation.runtask import run_elastic
 from mech2d.plot import plot_elastic
-#from mech2d import info
+from mech2d import NAME
+
+def get_version():
+  try:
+     from mech2d._version import version
+  except:
+     version="Unknow" 
+  return version 
 
 __author__ = "Haidi Wang"
 __copyright__ = "Copyright 2021"
@@ -17,12 +24,14 @@ __email__ = ""
 
 
 def main():
-    parser = argparse.ArgumentParser(description="""
-    mech2d is a convenient script that use to calculate the elastic properties
-    of 2D materials, including EOS, Stress-Strain Curve, elastic constants and
-    revalant properties. The script works based on several sub-commands with 
-    their own options. To see the options for the sub-commands, type 
-    "m2d sub-command -h".""")
+    parser = argparse.ArgumentParser(prog='m2d',
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    description="""Desctiption:\n------------
+mech2d is a convenient script that use to calculate the mechanical properties of
+2D materials, including EOS, Stress-Strain Curve, elastic constants and revalant
+properties. The script works based on several sub-commands with their own options.
+To see the options for the sub-commands, type "m2d sub-command -h".""")
+    parser.add_argument('-v', '--version', action='version', version=get_version(),help='Display version')
 
     subparsers = parser.add_subparsers()
 

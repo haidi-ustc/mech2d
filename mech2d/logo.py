@@ -13,6 +13,15 @@
 #    along with elastic2d.  If not, see <http://www.gnu.org/licenses/>.
 
 from mech2d.utils import box_center
+try:
+   from mech2d._version import version
+except:
+   version="Unknow"
+try:
+   from mech2d._date import date
+except:
+   date="2021.09.05"
+
 def logo():
 
     logo_list=     ['                     _     ___     _ ',
@@ -27,5 +36,5 @@ def logo():
     for lstr in logo_list:
         box_center(ch=lstr,fill=' ',sp='|')
     box_center(ch=' ',fill=' ',sp='|')
-    box_center(ch='version 1.0.0',fill=' ',sp='|')
+    box_center(ch=date+' '+version,fill=' ',sp='|')
     box_center(ch='_',fill='_',sp='|')
