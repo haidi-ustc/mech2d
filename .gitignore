@@ -1,8 +1,10 @@
-build/  
+build/*
 dist/
 *.egg-info/
 test/
 *log
 */__pycache__
 */_date.py
+*/*/__pycache__
 */_version.py
+*/dep
