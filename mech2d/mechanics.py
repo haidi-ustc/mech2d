@@ -621,8 +621,10 @@ class Elastic(MSONable):
         cont1= 0
         for i in self.lagrangian_strain_list:
             Ls_list= Ls_Dic[i]
+            _Ls_str= Ls_str[i]
             if self.verbose:
-               print(Ls_list)
+               box_center('Lagrangian strain List')
+               print(_Ls_str)
             cont1  = cont1 + 1
 
             Defn = os.path.join(pwd, self.outdir,'Def_'+def_fmt1%cont1)
@@ -657,7 +659,8 @@ class Elastic(MSONable):
                 eps_matrix = self._get_eps_matrix(Lv)
 
                 if self.verbose:
-                   box_center(sp='physical strain tensor:')
+                   print('raitio %.3f'%r)
+                   #box_center(ch='raitio %.3f'%r,fill=' ',sp=' ')
                    prettyprint(eps_matrix)
 
                 #--- Calculating the cell_new matrix ---------------------------------------------------------
@@ -697,6 +700,7 @@ def post_elastic(args):
        elat=Elastic.from_dict(elat)
     if elat.strategy == 'stress':
        order = 3
+    print(elat)
     if args.verbose:
        print('Default parameter for Elastic calculation post:')
        print(args)
@@ -716,10 +720,11 @@ def init_elastic(args):
     back=args.back
     outdir=args.outdir
     direction=args.direction
+    elat=Elastic(structure,strategy=strategy,properties=properties,outdir=outdir,verbose=verbose)
+    print(elat)
     if args.verbose:
        print('Default parameter for Elastic calculation init:')
        print(args)
-    elat=Elastic(structure,strategy=strategy,properties=properties,outdir=outdir,verbose=verbose)
     elat.get_deformed_structure(numb_points,max_lag_strain,direction=direction,back=back)
     #--------------------------------------------------------------------------------------------------
 
