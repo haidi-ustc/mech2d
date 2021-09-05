@@ -29,7 +29,6 @@ from mech2d.utils import prettyprint,box_center
 from mech2d.analysis import Analysis
 from mech2d.logo import logo
 
-debug=True
 #--------------------------------------------------------------------------------------------------
 # Define the global variables
 # Lagrangian strain dict.
@@ -59,7 +58,7 @@ LT_Dic = {              \
 
 def_fmt1="%d"
 def_fmt2="%03d"
-felastic='Elastic2D.json'
+felastic='Mech2D.json'
 fresult='result.json'
 
 #--------------------------------------------------------------------------------------------------
@@ -69,7 +68,7 @@ class Elastic(MSONable):
     A elastic object for initializaion and post-process.  
     """
 
-    def __init__(self,structure,strategy='energy',properties='elc', outdir=None,verbose=False):
+    def __init__(self,structure,strategy='energy',properties='elc', workdir=None,verbose=False):
         """
         Create an Elastic obj. from structure with given condition
         Args: 
@@ -88,10 +87,10 @@ class Elastic(MSONable):
         self._strategy = strategy
         self._properties = properties
         self.verbose = verbose
-        if outdir is None:
-           self.outdir =os.path.join(os.getcwd(), self.properties+'_'+self.strategy)
+        if workdir is None:
+           self.workdir =os.path.join(os.getcwd(), self.properties+'_'+self.strategy)
         else:
-           self.outdir=outdir
+           self.workdir=workdir
 
     def __str__(self):
         ret = '-'*Len+'\n'
@@ -267,14 +266,14 @@ class Elastic(MSONable):
             "lattice": self.lattice_type,
             "SOEC": self.number_elastic_tensor,
             "verbose":self.verbose,
-            "outdir":self.outdir
+            "workdir":self.workdir
         }
         return d
    
     @classmethod
     def from_dict(cls, d):
         return cls(d['structure'],strategy=d['strategy'], properties=d['properties'],
-                   outdir=d['outdir'], verbose = d['verbose'])
+                   workdir=d['workdir'], verbose = d['verbose'])
 
     def to(self,filename,option={},fmt=None,indent=4):
         d=self.as_dict()
@@ -304,16 +303,15 @@ class Elastic(MSONable):
              
         else:
            raise RuntimeError('ERROR: Unkonwn strategy! The supported are "energy" or "stress"')
-           
 
         pwd=os.getcwd()
         inputs=loadfn(os.path.join(pwd,finput))
         code=inputs['code']['name'].upper()
-        with open(os.path.join(pwd,felastic),'r') as f:
+        with open(os.path.join(self.workdir,felastic),'r') as f:
              elat2d=json.loads(f.read())
         numb_points=elat2d['numb_points']
         max_lag_strain=elat2d['max_lag_strain']
-        outdir=elat2d["outdir"]
+        workdir=elat2d["workdir"]
         V0=elat2d["V0"]
         
         #print(poly_order)
@@ -326,14 +324,14 @@ class Elastic(MSONable):
            C=self.calc_elastic_constant_from_energy(poly_order=poly_order,skip=skip,
                                                     numb_points=numb_points,
                                                     max_lag_strain=max_lag_strain,
-                                                    outdir=outdir,
+                                                    workdir=workdir,
                                                     code=code)
            C = eVToNpm*C/area # from eV/a^2 to N/m
         elif self.strategy=='stress':
            C=self.calc_elastic_constant_from_stress(poly_order=poly_order,skip=skip,
                                                     numb_points=numb_points,
                                                     max_lag_strain=max_lag_strain,
-                                                    outdir=outdir,
+                                                    workdir=workdir,
                                                     code=code)
 
            if self.verbose:
@@ -347,10 +345,10 @@ class Elastic(MSONable):
         ana.summary()
 
 #--------------------------------------------------------------------------------------------------
-    def calc_elastic_constant_from_stress(self,poly_order,skip,numb_points,max_lag_strain,outdir,code):
+    def calc_elastic_constant_from_stress(self,poly_order,skip,numb_points,max_lag_strain,workdir,code):
         for i in range(1,len(self.lagrangian_strain_list)+1):
             Ls_list= Ls_Dic[self.lagrangian_strain_list[i-1]]
-            Defn  = os.path.join(outdir,'Def_'+def_fmt1%i)
+            Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             if  not os.path.exists(Defn):
                 raise RuntimeError('ERROR: The '+ Defn +' directory not found.')
             #os.chdir(Defn)
@@ -419,7 +417,7 @@ class Elastic(MSONable):
 
         sigma=[] 
         for i in range(1,len(self.lagrangian_strain_list)+1):
-            Defn  = os.path.join(outdir,'Def_'+def_fmt1%i)
+            Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             fL=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian-stress.dat')
  
             ret=np.loadtxt(fL,skiprows=1) 
@@ -470,6 +468,7 @@ class Elastic(MSONable):
         elif self.lattice_type == 'H':
              C[0,0]=_C[0]
              C[0,1]=_C[1]
+             C[1,0]=_C[1]
              C[1,1]=_C[0]
              C[5,5]=0.5*(_C[0]-_C[1])
             
@@ -478,10 +477,10 @@ class Elastic(MSONable):
         return C
 
 #--------------------------------------------------------------------------------------------------
-    def calc_elastic_constant_from_energy(self,poly_order,skip,numb_points,max_lag_strain,outdir,code):
+    def calc_elastic_constant_from_energy(self,poly_order,skip,numb_points,max_lag_strain,workdir,code):
 
         for i in range(1,self.number_elastic_tensor+1):
-            Defn  = os.path.join(outdir,'Def_'+def_fmt1%i)
+            Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             if  not os.path.exists(Defn):
                 raise RuntimeError('ERROR: The '+ Defn +' directory not found.')
             os.chdir(Defn)
@@ -514,7 +513,7 @@ class Elastic(MSONable):
 
         A2 = []
         for i in range(1,self.number_elastic_tensor+1):
-            Defn  = os.path.join(outdir,'Def_'+def_fmt1%i)
+            Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             fEV=os.path.join(Defn,os.path.basename(Defn)+'_Energy.dat')
             ret=np.loadtxt(fEV) 
             coeffs = np.polyfit(ret[:,0], ret[:,1], poly_order[i-1])
@@ -617,7 +616,8 @@ class Elastic(MSONable):
         pwd = os.getcwd() 
     
         cell_old= cell.copy()
-        fdis = open('Deformed_Parameters','w')
+        create_path(self.workdir,back=False)
+        fdis = open(os.path.join(self.workdir,'Deformed_Parameters'),'w')
         cont1= 0
         for i in self.lagrangian_strain_list:
             Ls_list= Ls_Dic[i]
@@ -627,7 +627,7 @@ class Elastic(MSONable):
                print(_Ls_str)
             cont1  = cont1 + 1
 
-            Defn = os.path.join(pwd, self.outdir,'Def_'+def_fmt1%cont1)
+            Defn = os.path.join(pwd, self.workdir,'Def_'+def_fmt1%cont1)
             create_path(Defn,back=back)
             os.chdir(Defn)
         
@@ -686,14 +686,15 @@ class Elastic(MSONable):
         #--------------------------------------------------------------------------------------------------
         os.chdir(pwd)
         fdis.close()
-        self.to(felastic,option={"numb_points":numb_points,"max_lag_strain":max_lag_strain,"V0":V0})
+        self.to(os.path.join(self.workdir,felastic),option={"numb_points":numb_points,"max_lag_strain":max_lag_strain,"V0":V0})
 
 #--------------------------------------------------------------------------------------------------
 def post_elastic(args):
     logo()
     skip=args.skip
     order=args.order
-    elat=loadfn(felastic)
+    workdir=os.path.join(os.getcwd(), args.properties+'_'+args.strategy)
+    elat=loadfn(os.path.join(workdir,felastic))
     if isinstance(elat,Elastic):
        pass
     else:
@@ -718,9 +719,9 @@ def init_elastic(args):
        max_lag_strain = min([max_lag_strain,0.005])
     verbose=args.verbose
     back=args.back
-    outdir=args.outdir
+    workdir=os.path.join(os.getcwd(), args.properties+'_'+args.strategy)
     direction=args.direction
-    elat=Elastic(structure,strategy=strategy,properties=properties,outdir=outdir,verbose=verbose)
+    elat=Elastic(structure,strategy=strategy,properties=properties,workdir=workdir,verbose=verbose)
     print(elat)
     if args.verbose:
        print('Default parameter for Elastic calculation init:')
@@ -732,7 +733,7 @@ if __name__=="__main__":
    st=Structure.from_file('POSCAR')
    elat=Elastic(st,strategy='energy',properties='elc',verbose=True)
    sts=elat.get_deformed_structure(9,0.02,back=False) 
-   #sts=elat.get_deformed_structure(6,0.1,outdir='test1',back=True) 
+   #sts=elat.get_deformed_structure(6,0.1,workdir='test1',back=True) 
    #sts=elat.get_deformed_structure(6,0.4,back=False) 
    elat1=Elastic.from_dict(elat.as_dict())
    print(elat1)

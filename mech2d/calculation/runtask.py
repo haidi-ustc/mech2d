@@ -6,14 +6,15 @@ import os
 from glob import glob
 from pymatgen.core import Structure
 from mech2d.calculation.vasp import VASP
+from mech2d.mechanics import felastic
 from monty.serialization import loadfn,dumpfn
 from dpdispatcher import Machine, Resources, Task, Submission
 
 supported_calculators=["VASP"]
 
 class RunTasks():
-    def __init__(self, rootpath, structures, code):
-        self.rootpath=rootpath
+    def __init__(self, rootdir, structures, code):
+        self.rootdir=rootdir
         self.structures = structures
         self.code = code
         calculator=code['name'].upper()
@@ -48,7 +49,7 @@ class RunTasks():
                       errlog=task_dict['errlog']
                    )
             task_list.append(_task)
-        submission=Submission(work_base=self.rootpath,
+        submission=Submission(work_base=self.rootdir,
                               machine=machine, 
                               resources=resources,
                               task_list=task_list,
@@ -69,12 +70,14 @@ def run_elastic(args):
     resources=Resources.load_from_dict(inputs['resources'])
     tasks=inputs['tasks']
     code=inputs['code']
-    rootpath=os.getcwd()
-    assert os.path.exists(os.path.join(rootpath,"Elastic2D.json"))
-    with open('Elastic2D.json','r') as f:
+    rootdir=os.getcwd()
+    workdir=os.path.join(rootdir, args.properties+'_'+args.strategy)
+    if not os.path.exists(os.path.join(workdir,felastic)):
+       raise RuntimeError('ERROR: %s file not exits')
+    with open(os.path.join(workdir,felastic),'r') as f:
          elatic2d=json.loads(f.read())
-    structures=glob(os.path.join(elatic2d['outdir'],'Def_?','Def_?_???','Def_*vasp'))
-    runtask=RunTasks(rootpath,structures,code)
+    structures=glob(os.path.join(elatic2d['workdir'],'Def_?','Def_?_???','Def_*vasp'))
+    runtask=RunTasks(rootdir,structures,code)
     runtask.preprocess()
     runtask.run(tasks,machine,resources)
 
