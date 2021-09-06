@@ -304,7 +304,8 @@ class Elastic(MSONable):
               if len(poly_order) !=len(self.lagrangian_strain_list):
                  poly_order=[poly_order[0]]*len(self.lagrangian_strain_list)
            else:
-              raise RuntimeError('ERROR: Polynomial order must be integer or list of integer with length = %d '%len(len(self.lagrangian_strain_list)))
+              raise RuntimeError('ERROR: Polynomial order must be integer or list of integer with length = %d '
+                                 %len(len(self.lagrangian_strain_list)))
         elif self.strategy=='stress':
            if isinstance(poly_order,int):
               poly_order=[poly_order]*6
@@ -312,7 +313,8 @@ class Elastic(MSONable):
               if len(poly_order) !=6:
                  poly_order=[poly_order[0]]*6
            else:
-              raise RuntimeError('ERROR: Polynomial order must be integer or list of integer with length = %d '%len(len(self.lagrangian_strain_list)))
+              raise RuntimeError('ERROR: Polynomial order must be integer or list of integer with length = %d '
+                                %len(len(self.lagrangian_strain_list)))
              
         else:
            raise RuntimeError('ERROR: Unkonwn strategy! The supported are "energy" or "stress"')
@@ -396,10 +398,8 @@ class Elastic(MSONable):
                                 le[i] = Ls_list[i]
 
                             Lv = r*le
-                            eps_matrix=self._get_eps_matrix(Lv)
-                            i_matrix   = np.array([[1., 0., 0.],
-                                                [0., 1., 0.],
-                                                [0., 0., 1.]])
+                            eps_matrix=self._get_eps_matrix(Lv.copy())
+                            i_matrix   = np.eye(3)
                             def_matrix = i_matrix + eps_matrix
 
                             # calculate the Lagrangian stress from phyical stress and physical strain
@@ -501,7 +501,7 @@ class Elastic(MSONable):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             if  not os.path.exists(Defn):
                 raise RuntimeError('ERROR: The '+ Defn +' directory not found.')
-            os.chdir(Defn)
+            #os.chdir(Defn)
             fEV=os.path.join(Defn,os.path.basename(Defn)+'_Energy.dat')
 
             if skip: 
@@ -514,7 +514,7 @@ class Elastic(MSONable):
                         Defn_num = os.path.join(Defn, os.path.basename(Defn)+'_'+def_fmt2%j)
 
                         if (os.path.exists(Defn_num)):
-                            os.chdir(Defn_num)
+                            #os.chdir(Defn_num)
                             if code=='VASP': 
                                ret=VASP.get_energy(Defn_num)
                                if ret:
@@ -633,7 +633,7 @@ class Elastic(MSONable):
                ' Choose a larger maximum Lagrangian strain'\
                'or a less number of deformed structures.\n')
 
-        cell  = self._struct.lattice.matrix.copy().tolist()
+        cell  = self._struct.lattice.matrix.copy()
         V0   = abs(np.linalg.det(cell))
 
         pwd = os.getcwd() 
@@ -647,12 +647,13 @@ class Elastic(MSONable):
             _Ls_str= Ls_str[i]
             if self.verbose:
                box_center('Lagrangian strain List')
+               print(Ls_list)
                print(_Ls_str)
             cont1  = cont1 + 1
 
             Defn = os.path.join(pwd, self.workdir,'Def_'+def_fmt1%cont1)
             create_path(Defn,back=back)
-            os.chdir(Defn)
+            #os.chdir(Defn)
         
             print(Defn+', Lagrangian strain = ' + Ls_str[i],file=fdis)
         
@@ -678,20 +679,32 @@ class Elastic(MSONable):
                 for i in range(6):
                     Ls[i] = Ls_list[i]
                 Lv = r*Ls
-        
-                eps_matrix = self._get_eps_matrix(Lv)
-
+                 
                 if self.verbose:
-                   print('raitio %.3f'%r)
-                   #box_center(ch='raitio %.3f'%r,fill=' ',sp=' ')
-                   prettyprint(eps_matrix)
+                   print(Lv)
+
+                Lv_matrix=np.zeros((3,3))
+                Lv_matrix[0][0]=Lv[0]
+                Lv_matrix[1][1]=Lv[1]
+                Lv_matrix[2][2]=Lv[2]
+                Lv_matrix[2][1]=Lv[3]/2
+                Lv_matrix[1][2]=Lv[3]/2
+                Lv_matrix[2][0]=Lv[4]/2
+                Lv_matrix[0][2]=Lv[4]/2
+                Lv_matrix[0][1]=Lv[5]/2
+                Lv_matrix[1][0]=Lv[5]/2
+
+                eps_matrix = self._get_eps_matrix(Lv.copy())
 
                 #--- Calculating the cell_new matrix ---------------------------------------------------------
-                i_matrix   = np.array([[1., 0., 0.],
-                                    [0., 1., 0.], 
-                                    [0., 0., 1.]])
+                i_matrix   = np.eye(3)
                 def_matrix = i_matrix + eps_matrix
                 cell_new      = np.dot(cell_old, def_matrix)
+
+                if self.verbose:
+                   print('raitio %.3f    Lv_matrix        eta_mtrix          def_matrix'%r)
+                   #box_center(ch='raitio %.3f'%r,fill=' ',sp=' ')
+                   prettyprint(np.hstack((Lv_matrix,eps_matrix,def_matrix)),precision=5)
                 #------------------------------------------------------------------------------------------
                 cont2 = cont2 + 1
                 Defn_cont2  = os.path.join(Defn, Defn.split('/')[-1]+'_'+def_fmt2%cont2)
@@ -703,11 +716,10 @@ class Elastic(MSONable):
         
                 #--- Writing the structure file -----------------------------------------------------------
                 create_path(Defn_cont2,back=False)
-                os.chdir(Defn_cont2)
                 new_struct=Structure(cell_new,self.structure.species,self.structure.frac_coords)
                 new_struct.to("POSCAR",os.path.join(Defn_cont2,Defn_cont2.split('/')[-1] +'.vasp'))
         #--------------------------------------------------------------------------------------------------
-        os.chdir(pwd)
+        #os.chdir(pwd)
         fdis.close()
         self.to(os.path.join(self.workdir,felastic),option={"numb_points":numb_points,"max_lag_strain":max_lag_strain,"V0":V0})
 
