@@ -1,7 +1,7 @@
 build/*
 dist/
 *.egg-info/
-test/
+test*
 *.eggs/
 *log
 */__pycache__

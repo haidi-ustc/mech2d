@@ -32,27 +32,31 @@ from mech2d.logo import logo
 #--------------------------------------------------------------------------------------------------
 # Define the global variables
 # Lagrangian strain dict.
-Ls_Dic={                       \
-'01':[ 1., 0., 0., 0., 0., 0.],\
-'02':[ 1., 1., 0., 0., 0., 0.],\
-'03':[ 0., 1., 0., 0., 0., 0.],\
-'04':[ 0., 0., 0., 0., 0., 2.],\
-'05':[ 1., 0., 0., 0., 0., 2.],\
-'06':[ 0., 1., 0., 0., 0., 2.]}
+Ls_Dic={                       
+'01':[ 1., 0., 0., 0., 0., 0.],
+'02':[ 1., 1., 0., 0., 0., 0.],
+'03':[ 0., 1., 0., 0., 0., 0.],
+'04':[ 0., 0., 0., 0., 0., 2.],
+'05':[ 1., 0., 0., 0., 0., 2.],
+'06':[ 0., 1., 0., 0., 0., 2.],
+'07':[ 1., 0., 0., 0., 0., 1.],
+'08':[ 0., 0., 0., 0., 0., 1.]}
 
-Ls_str={                                     \
-'01':'(  eta,  0.0,  0.0,  0.0,  0.0,  0.0)',\
-'02':'(  eta,  eta,  0.0,  0.0,  0.0,  0.0)',\
-'03':'(  0.0,  eta,  0.0,  0.0,  0.0,  0.0)',\
-'04':'(  0.0,  0.0,  0.0,  0.0,  0.0, 2eta)',\
-'05':'(  eta,  0.0,  0.0,  0.0,  0.0, 2eta)',\
-'06':'(  0.0,  eta,  0.0,  0.0,  0.0, 2eta)'}
+Ls_str={                                     
+'01':'(  eta,  0.0,  0.0,  0.0,  0.0,  0.0)',
+'02':'(  eta,  eta,  0.0,  0.0,  0.0,  0.0)',
+'03':'(  0.0,  eta,  0.0,  0.0,  0.0,  0.0)',
+'04':'(  0.0,  0.0,  0.0,  0.0,  0.0, 2eta)',
+'05':'(  eta,  0.0,  0.0,  0.0,  0.0, 2eta)',
+'06':'(  0.0,  eta,  0.0,  0.0,  0.0, 2eta)',
+'07':'(  eta,  0.0,  0.0,  0.0,  0.0,  eta)',
+'08':'(  0.0,  eta,  0.0,  0.0,  0.0,  eta)'}
 
-LT_Dic = {              \
-'O'  :'Oblique'        ,\
-'R'  :'Rectangular'    ,\
-'CR' :'rectangular' ,\
-'H'  :'Hexagonal'      ,\
+LT_Dic = {              
+'O'  :'Oblique',
+'R'  :'Rectangular',
+'CR' :'rectangular',
+'H'  :'Hexagonal',
 'S'  :'Square'
 } 
 
@@ -82,11 +86,10 @@ class Elastic(MSONable):
            self._struct = structure
         else:
            raise RuntimeError('structure must be file name or Pymatgen Structure obj')
-
         
         self._strategy = strategy
         self._properties = properties
-        self.verbose = verbose
+        self._verbose = verbose
         if workdir is None:
            self.workdir =os.path.join(os.getcwd(), self.properties+'_'+self.strategy)
         else:
@@ -109,6 +112,14 @@ class Elastic(MSONable):
  
     def __repr__(self):
         return str(self)
+
+    @property
+    def verbose(self):
+        return self._verbose
+
+    @verbose.setter
+    def verbose(self,val):
+        self._verbose=val
 
     @property
     def properties(self):
@@ -162,28 +173,30 @@ class Elastic(MSONable):
                         [0,0,0,0,0,0],
                         [0,0,0,0,0,0],
                         [0,0,0,0,1,0],
-                        [0,0,0,2,0,0],
-                        [0,0,0,0,2,0],
+                        [0,0,0,1,0,0],
+                        [0,0,0,0,1,0],
                         [0,0,0,0,0,0],
                         [0,0,0,0,0,0],
                         [0,0,0,0,0,0],
-                        [0,0,0,0,0,2],
+                        [0,0,0,0,0,1],
                         ]
                         )
         elif self.lattice_type == 'CR' or self.lattice_type == 'R':
            #'c11 c12 c22 c66'
-           return np.mat([[0,1,0,0],
+           return np.mat([
+                          [0,1,0,0],
                           [0,0,1,0],
                           [0,0,0,0],
                           [0,0,0,0],
                           [0,0,0,0],
                           [0,0,0,0],
-                          [1,0,0,0],
-                          [0,1,0,0],
+                          [1,1,0,0],
+                          [0,1,1,0],
                           [0,0,0,0],
                           [0,0,0,0],
                           [0,0,0,0],
-                          [0,0,0,2] ]
+                          [0,0,0,1]
+                         ]
                           )
         elif self.lattice_type == 'S':
            # 'c11 c12 c66'
@@ -192,7 +205,7 @@ class Elastic(MSONable):
                           [0,0,0],
                           [0,0,0],
                           [0,0,0],
-                          [0,0,2]]
+                          [0,0,1]]
                           )
         elif self.lattice_type == 'H':
            # 'c11 c12'
@@ -236,11 +249,11 @@ class Elastic(MSONable):
        elif  self.strategy =='stress':
 
            if self.lattice_type == 'O':
-               Lag_strain_list = ['01','03','04']
+               Lag_strain_list = ['01','03','08']
            elif self.lattice_type == 'CR' or self.lattice_type == 'R':
-               Lag_strain_list = ['03','05']
+               Lag_strain_list = ['03','07']
            elif self.lattice_type == 'S':
-               Lag_strain_list = ['05']
+               Lag_strain_list = ['07']
            elif self.lattice_type == 'H':
                Lag_strain_list = ['05']
            else: 
@@ -367,9 +380,14 @@ class Elastic(MSONable):
                         if (os.path.exists(Defn_num)):
 
                             if code=='VASP': 
+                               ret = VASP.get_stress(Defn_num)
+                               if ret:
+                                   sig = ret
+                               else:
+                                   print("ERROR: cannot parse energy from:\n%s"%Defn_num)
+                                   os._exit(0)
                               
-                               sig = VASP.get_stress(Defn_num)
-                            sig[2][2]=0
+                            #sig[2][2]=0
                             s = j-(numb_points+1)/2
                             r = 2*max_lag_strain*s/(numb_points-1)
 
@@ -437,7 +455,7 @@ class Elastic(MSONable):
 
         if self.verbose:
            box_center(ch='_C')
-           print(ci)
+           print(_C)
     
         C     = np.zeros((6,6))
         if self.lattice_type == 'O':
@@ -498,7 +516,12 @@ class Elastic(MSONable):
                         if (os.path.exists(Defn_num)):
                             os.chdir(Defn_num)
                             if code=='VASP': 
-                               energy = "%12.10f"%(float(VASP.get_energy(Defn_num)))
+                               ret=VASP.get_energy(Defn_num)
+                               if ret:
+                                   energy = "%12.10f"%(float(ret))
+                               else:
+                                   print("ERROR: cannot parse energy from:\n%s"%Defn_num)
+                                   os._exit(0)
 
                             s = j-(numb_points+1)/2
                             r = 2*max_lag_strain*s/(numb_points-1)
@@ -705,6 +728,7 @@ def post_elastic(args):
     if args.verbose:
        print('Default parameter for Elastic calculation post:')
        print(args)
+       elat.verbose=args.verbose
     elat.calc_elastic_constant(poly_order=order,skip=skip)
 
 #--------------------------------------------------------------------------------------------------
@@ -715,8 +739,8 @@ def init_elastic(args):
     numb_points =args.number
     properties = args.properties
     max_lag_strain =args.maxs
-    if strategy == 'stress':
-       max_lag_strain = min([max_lag_strain,0.005])
+    #if strategy == 'stress':
+    #   max_lag_strain = min([max_lag_strain,0.005])
     verbose=args.verbose
     back=args.back
     workdir=os.path.join(os.getcwd(), args.properties+'_'+args.strategy)
