@@ -7,3 +7,4 @@ test*
 */__pycache__
 */*/__pycache__
 */dep
+*/_version.py
