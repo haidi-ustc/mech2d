@@ -72,27 +72,53 @@ class Plot(object):
         plt.savefig(fname,format='jpg',dpi=300)
         #plt.show()
  
+    def stress_strain_plot_nonefit(self,font_dict={},figsize=(16,16),fname='LStress_Strain.jpg'):
+        self._set_fig(font_dict=font_dict,figsize=figsize)
+        if debug:
+           prettyprint(self._data)
+        strain=self._data[:,0]*100
+        stress_XX=self._data[:,1]
+        stress_YY=self._data[:,2]
+        stress_XY=self._data[:,6]
+        energy=self._data[:,7]
+        strain_min=strain.min()*1.01
+        strain_max=strain.max()*1.01
+        Ys=[stress_XX,stress_YY,stress_XY,energy]
+        labels=["XX",'YY',"XY"]
+        loc=[[2,2,1],[2,2,2],[2,2,3],[2,2,4]]
+        for ii,Y in enumerate(Ys):
+            _loc=loc[ii]
+            ax=self.fig.add_subplot(_loc[0],_loc[1],_loc[2])
+            ax.plot(strain,Y,linestyle='-',marker='o',alpha=0.7)
+            ax.set_xlabel('Lagrangian strain (%)') 
+            if ii==3:
+               ax.set_ylabel('Energy (eV)')
+            else:
+               ax.set_ylabel('%s Stress (N/m)'%(labels[ii]))
+        plt.savefig(fname,format='jpg',dpi=300)
+
     def stress_strain_plot(self,font_dict={},figsize=(18,6),order=[3,3,3],fname='LStress_Strain.jpg'):
         self._set_fig(font_dict=font_dict,figsize=figsize)
         if debug:
            prettyprint(self._data)
         strain=self._data[:,0]*100
-        energy_XX=self._data[:,1]
-        energy_YY=self._data[:,2]
-        energy_XY=self._data[:,6]
+        stress_XX=self._data[:,1]
+        stress_YY=self._data[:,2]
+        stress_XY=self._data[:,6]
         strain_min=strain.min()*1.01
         strain_max=strain.max()*1.01
         strain_vals=np.linspace(strain_min,strain_max,100)
-        energies=[energy_XX,energy_YY,energy_XY]
-        for ii,energy in enumerate(energies):
+        Ys=[stress_XX,stress_YY,stress_XY]
+        labels=["XX",'YY',"XY"]
+        for ii,Y in enumerate(Ys):
             ax=self.fig.add_subplot(1,3,ii+1)
-            coeff=np.polyfit(strain.copy(),energy.copy(),order[ii])
+            coeff=np.polyfit(strain.copy(),Y.copy(),order[ii])
             poly=np.poly1d(coeff)
-            energy_vals=poly(strain_vals)
-            ax.scatter(strain,energy,marker='o',facecolor='r',edgecolor='k',alpha=0.7)
-            ax.plot(strain_vals,energy_vals,linestyle='--',alpha=0.5)
+            Y_vals=poly(strain_vals)
+            ax.scatter(strain,Y,marker='o',facecolor='r',edgecolor='k',alpha=0.7)
+            ax.plot(strain_vals,Y_vals,linestyle='--',alpha=0.5)
             ax.set_xlabel('Lagrangian strain (%)') 
-            ax.set_ylabel('Stress (GPa)')
+            ax.set_ylabel('%s Stress (GPa)'%(labels[ii]))
         plt.savefig(fname,format='jpg',dpi=300)
         #plt.show()
 

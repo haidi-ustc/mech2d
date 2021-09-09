@@ -88,7 +88,7 @@ def run_elastic(args):
        raise RuntimeError('ERROR: %s file not exits')
     with open(os.path.join(workdir,felastic),'r') as f:
          elatic2d=json.loads(f.read())
-    structures=glob(os.path.join(elatic2d['workdir'],'Def_?','Def_?_???','Def_*vasp'))
+    structures=glob(os.path.join(elatic2d['workdir'],'Def_*','Def_*','Def_*vasp'))
     runtask=RunTasks(rootdir,structures,code)
     runtask.preprocess()
     runtask.run(tasks,machine,resources)

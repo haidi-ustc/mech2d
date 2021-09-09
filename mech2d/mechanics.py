@@ -49,6 +49,13 @@ Ls_str={
 '05':'(  eta,  0.0,  0.0,  0.0,  0.0, 2eta)',
 '06':'(  0.0,  eta,  0.0,  0.0,  0.0, 2eta)'}
 
+Direct_Dict={
+'xx': '01',
+'bi': '02',
+'yy': '03',
+'xy': '04'
+}
+
 LT_Dic = {              
 'O'  :'Oblique',
 'R'  :'Rectangular',
@@ -271,6 +278,102 @@ class Elastic(MSONable):
            filename+='.'+fmt
         dumpfn(d,filename,indent=indent) 
    
+    def calc_stress_strain(self,skip=False,finput='input.yaml',plot=False):
+
+        if self.approach=="energy":
+           raise RuntimeError("ERROR: Stress Strain curve calculation only support stress approach")
+
+        pwd=os.getcwd()
+        inputs=loadfn(os.path.join(pwd,finput))
+        code=inputs['code']['name'].upper()
+        with open(os.path.join(self.workdir,felastic),'r') as f:
+             elat2d=json.loads(f.read())
+        numb_points=elat2d['numb_points']
+
+        if 'max_lag_strain' in elat2d.keys():
+            max_lag_strain=elat2d['max_lag_strain']
+            lag_strain_range=None
+        else:
+            max_lag_strain=None
+            lag_strain_range=elat2d['lag_strain_range']
+            
+        workdir=elat2d["workdir"]
+        V0=elat2d["V0"]
+        direction=elat2d['direction']
+        height=self.structure.lattice.c 
+        _cell=self.structure.lattice.matrix.copy()
+        area = np.linalg.norm(np.cross(_cell[0],_cell[1]))
+
+        for i in direction:
+            def_key  = 'Def_'+i
+            Ls_list= Ls_Dic[Direct_Dict[i]]
+            Defn = os.path.join(pwd, self.workdir, def_key)
+            sigs=[]
+            taos=[]
+            for j in range(1,numb_points+1):
+                Defn_num = os.path.join(Defn, def_key+'_'+def_fmt2%j)
+                if (os.path.exists(Defn_num)):
+
+                    if code=='VASP': 
+                       CONV=-1*height/100 # for VASP
+                       ret0 = VASP.get_stress(Defn_num)
+                       ret1 = VASP.get_energy(Defn_num)
+                       if ret0 and ret1:
+                           sig = np.array(ret0)
+                           energy = float(ret1)
+                       else:
+                           print("ERROR: cannot parse energy or stress from:\n%s"%Defn_num)
+                           os._exit(0)
+
+                    sig[2][2]=0
+                    sig[0][2]=0
+                    sig[2][0]=0
+                    sig[2][1]=0
+                    sig[1][2]=0
+
+                    if max_lag_strain:
+                       rs=np.linspace(-max_lag_strain,max_lag_strain,numb_points)
+                    else:
+                       rs=np.linspace(lag_strain_range[0],lag_strain_range[1],numb_points)
+                    r=rs[j-1]
+
+                    le = np.zeros(6)
+                    for k in range(6):
+                        le[k] = Ls_list[k]
+
+                    Lv = r*le
+                    eps_matrix=self._get_eps_matrix(Lv.copy())
+                    def_matrix = np.eye(3) + eps_matrix
+
+                    # calculate the Lagrangian stress from phyical stress and physical strain
+                    dm  = def_matrix.copy()
+                    idm = np.linalg.inv(dm)
+                    tao = np.linalg.det(dm)*np.dot(idm,np.dot(sig,idm))
+                    tao=tao*CONV
+                    sig=sig*CONV
+                    sigs.append([r,sig[0][0],sig[1][1],sig[2][2],sig[1][2],sig[0][2],sig[0][1],energy])
+                    taos.append([r,tao[0][0],tao[1][1],tao[2][2],tao[1][2],tao[0][2],tao[0][1],energy])
+                else:
+                    raise RuntimeError("ERROR: Directory %s not exits"%Defn_num)
+            fL=os.path.join(Defn,def_key+'_Lagrangian_Stress.dat')
+            fP=os.path.join(Defn,def_key+'_Physical_Stress.dat')
+            if self.verbose:
+               box_center("Physical Stress")
+               prettyprint(np.array(sigs))
+               box_center("Lagrangian Stress")
+               prettyprint(np.array(taos))
+            _fmt='%14.8f  '*7+'%16.8f'
+            _header="#Phy. strain          XX           YY           ZZ           YZ           XZ           XY (N/m)  energy (eV)" 
+            np.savetxt(fP, np.array(taos), delimiter=" ", header=_header, fmt=_fmt, comments='')
+            _header="#Lag. strain          XX           YY           ZZ           YZ           XZ           XY (N/m)  energy (eV)" 
+            np.savetxt(fL, np.array(sigs), delimiter=" ", header=_header, fmt=_fmt, comments='')
+            if plot: 
+               try:
+                  _plot=Plot(data=fL)
+                  _plot.stress_strain_plot_nonefit(fname=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian_Stress.jpg'))
+               except:
+                  print('WARNING: Plot failed, skip !!!')
+                
 #--------------------------------------------------------------------------------------------------
     def calc_elastic_constant(self,poly_order=4,skip=False,finput='input.yaml',plot=False):
         if self.approach == 'energy':
@@ -345,8 +448,8 @@ class Elastic(MSONable):
             if  not os.path.exists(Defn):
                 raise RuntimeError('ERROR: The '+ Defn +' directory not found.')
             #os.chdir(Defn)
-            fL=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian-stress.dat')
-            fP=os.path.join(Defn,os.path.basename(Defn)+'_Physical-stress.dat')
+            fL=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian_Stress.dat')
+            fP=os.path.join(Defn,os.path.basename(Defn)+'_Physical_Stress.dat')
             if skip: 
                # Sometimes user can parsing the output file by themselves 
                print("Skip parsing: \n%s \n%s"%(fL,fP) )
@@ -376,8 +479,8 @@ class Elastic(MSONable):
                             r = 2*max_lag_strain*s/(numb_points-1)
 
                             le = np.zeros(6)
-                            for i in range(6):
-                                le[i] = Ls_list[i]
+                            for k in range(6):
+                                le[k] = Ls_list[k]
 
                             Lv = r*le
                             eps_matrix=self._get_eps_matrix(Lv.copy())
@@ -410,6 +513,8 @@ class Elastic(MSONable):
                                               +'   '+'%14.8f'%tao[0][2]\
                                               +'   '+'%14.8f'%tao[0][1]+'\n')
         
+                        else:
+                            raise RuntimeError("ERROR: Directory %s not exits"%Defn_num)
         if self.verbose:
            box_center('poly_order')
            print(poly_order)
@@ -417,12 +522,12 @@ class Elastic(MSONable):
         sigma=[] 
         for i in range(1,len(self.lagrangian_strain_list)+1):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
-            fL=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian-stress.dat')
+            fL=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian_Stress.dat')
             if plot: 
                try:
                   _plot=Plot(data=fL)
                   _plot.stress_strain_plot(order=poly_order,
-                                           fname=os.path.join(Defn,os.path.basename(Defn)+'_LStress_Strain.jpg'))
+                                           fname=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian_Stress.jpg'))
                except:
                   print('WARNING: Plot failed, skip !!!')
             ret=np.loadtxt(fL,skiprows=1) 
@@ -435,7 +540,7 @@ class Elastic(MSONable):
                    prettyprint(np.vstack((ret[:,0],ret[:,idx+1])),precision=5)
                 coeff = np.polyfit(ret[:,0], ret[:,idx+1], poly_order[idx])
                 sigma.append(float(coeff[poly_order[idx]-1]))
-            print(sigma)
+            #print(sigma)
 
         if self.verbose:
            box_center(ch='sigma')
@@ -488,7 +593,7 @@ class Elastic(MSONable):
              C[5,5]=0.5*(_C[0]-_C[1])
             
         else: 
-           raise RuntimeError('ERROR: Unknown 2D bravais lattice')
+           raise RuntimeError('ERROR: Unknown 2D bravais lattice.')
         return C
 
 #--------------------------------------------------------------------------------------------------
@@ -499,6 +604,7 @@ class Elastic(MSONable):
             if  not os.path.exists(Defn):
                 raise RuntimeError('ERROR: The '+ Defn +' directory not found.')
             #os.chdir(Defn)
+            # use the text format, easy use for users with other DFT code
             fEV=os.path.join(Defn,os.path.basename(Defn)+'_Energy.dat')
 
             if skip: 
@@ -618,7 +724,128 @@ class Elastic(MSONable):
         return eps_matrix
 
 #--------------------------------------------------------------------------------------------------
-    def get_deformed_structure(self,numb_points,max_lag_strain,direction='xx',back=True):
+    def set_deformed_structure_for_ss(self,numb_points,max_lag_strain=None,lag_strain_range=None,direction=['xx'],back=True):
+
+        if (numb_points < 2):
+           raise RuntimeError('ERROR: Too few deformed structure, increase numb_points')
+
+        if self.approach == 'energy':
+           raise RuntimeError("ERROR: Stress Strain curve calculation only support stress approach")
+
+        if self.approach == 'stress':
+           interval = 0.00001
+
+        if max_lag_strain:
+           if (numb_points%2 == 0):
+               numb_points   += 1
+               print( 'The number of the Deformed structures change to  '+ str(numb_points) )
+           else:
+               print( 'The number of the Deformed structures is  '+ str(numb_points))
+           ptn = int((numb_points-1)/2)
+           if (max_lag_strain/ptn <= interval):
+              raise RuntimeError('ERROR: The interval of the strain values is < '+ str(interval) +\
+                  ' Choose a larger maximum Lagrangian strain'\
+                  'or a less number of deformed structures.\n')
+           loop_list = range(-ptn, ptn+1)
+           rs=np.linspace(-max_lag_strain,max_lag_strain,numb_points)
+        else:
+           ptn = numb_points
+           rs=np.linspace(lag_strain_range[0],lag_strain_range[1],ptn)
+           if (abs(rs[1]-rs[0]) <= interval):
+              raise RuntimeError('ERROR: The interval of the strain range is < '+ str(interval) +\
+                  ' Choose a larger Lagrangian strain range'\
+                  'or a less number of deformed structures.\n')
+           loop_list = range(1,ptn+1)
+
+        if self.verbose:
+           box_center("ration list")
+           print(len(rs),len(loop_list))
+           print(loop_list)   
+        cell  = self._struct.lattice.matrix.copy()
+        V0   = abs(np.linalg.det(cell))
+        pwd = os.getcwd() 
+
+        cell_old= cell.copy()
+        create_path(self.workdir,back=back)
+        def_params={}
+
+        cont1= 0
+        for i in direction:
+            Ls_list= Ls_Dic[Direct_Dict[i]]
+            _Ls_str= Ls_str[Direct_Dict[i]]
+            if self.verbose:
+               box_center('Lagrangian strain List')
+               print(Ls_list)
+               print(_Ls_str)
+            cont1  = cont1 + 1
+            def_key  = 'Def_'+i
+            Defn = os.path.join(pwd, self.workdir,'Def_'+i)
+
+            create_path(Defn,back=back)
+            cont2 = 0
+               
+            def_structs_list = []
+            for s,r in zip(loop_list,rs):
+
+                def_structs_dict = {'Path':None,'eta':None,'Cell':None}
+                
+                Ls = np.zeros(6)
+                for k in range(6):
+                    Ls[k] = Ls_list[k]
+                Lv = r*Ls
+                 
+                if self.verbose:
+                   print(Lv)
+
+                Lv_matrix=np.zeros((3,3))
+                Lv_matrix[0][0]=Lv[0]
+                Lv_matrix[1][1]=Lv[1]
+                Lv_matrix[2][2]=Lv[2]
+                Lv_matrix[2][1]=Lv[3]/2
+                Lv_matrix[1][2]=Lv[3]/2
+                Lv_matrix[2][0]=Lv[4]/2
+                Lv_matrix[0][2]=Lv[4]/2
+                Lv_matrix[0][1]=Lv[5]/2
+                Lv_matrix[1][0]=Lv[5]/2
+
+                eps_matrix = self._get_eps_matrix(Lv.copy())
+
+                #--- Calculating the cell_new matrix ---------------------------------------------------------
+                i_matrix   = np.eye(3)
+                def_matrix = i_matrix + eps_matrix
+                cell_new      = np.dot(cell_old, def_matrix)
+
+                if self.verbose:
+                   print('raitio %.3f    Lv_matrix        eta_mtrix          def_matrix'%r)
+                   #box_center(ch='raitio %.3f'%r,fill=' ',sp=' ')
+                   prettyprint(np.hstack((Lv_matrix,eps_matrix,def_matrix)),precision=5)
+                #------------------------------------------------------------------------------------------
+                cont2 = cont2 + 1
+                Defn_cont2  = os.path.join(Defn, Defn.split('/')[-1]+'_'+def_fmt2%cont2)
+        
+                def_structs_dict['Path'] = Defn_cont2
+                def_structs_dict['eta']  = r
+                def_structs_dict['Cell'] = cell_new.tolist()
+                def_structs_list.append(def_structs_dict)
+
+                #--- Writing the structure file -----------------------------------------------------------
+                create_path(Defn_cont2,back=False)
+                new_struct=Structure(cell_new,self.structure.species,self.structure.frac_coords)
+                new_struct.to("POSCAR",os.path.join(Defn_cont2,Defn_cont2.split('/')[-1] +'.vasp'))
+            def_params[def_key]={'Path':Defn,'LagrangianStrain':Ls_str[Direct_Dict[i]],'DeformedCell':def_structs_list}
+        #--------------------------------------------------------------------------------------------------
+        dumpfn(def_params,os.path.join(self.workdir,'Deformed_Parameters.json'),indent=4)
+
+        if max_lag_strain:
+           self.to(os.path.join(self.workdir,felastic),
+                   option={"numb_points":numb_points,"max_lag_strain":max_lag_strain,
+                           "direction":direction,"V0":V0})
+        else:
+           self.to(os.path.join(self.workdir,felastic),
+                   option={"numb_points":numb_points,"lag_strain_range":lag_strain_range,
+                           "direction":direction,"V0":V0})
+
+    def set_deformed_structure_for_elc(self,numb_points,max_lag_strain,back=True):
 
         if (numb_points < 5):
            raise RuntimeError('ERROR: Too few deformed structure, increase numb_points')
@@ -667,19 +894,13 @@ class Elastic(MSONable):
         
             cont2 = 0
             
-            if self.properties == 'elc':
-               loop_list = range(-ptn, ptn+1)
-            else:
-               loop_list = range(1,numb_points+1)
+            loop_list = range(-ptn, ptn+1)
                
             def_structs_list = []
             for s in loop_list:
 
                 def_structs_dict = {'Path':None,'eta':None,'Cell':None}
-                if self.properties == 'elc':
-                    r = max_lag_strain*s/ptn
-                else:
-                    r = max_lag_strain*s/numb_points
+                r = max_lag_strain*s/ptn
                 
                 if (s==0):
                     if (self.approach == 'Energy'): r = 0.0001
@@ -712,8 +933,7 @@ class Elastic(MSONable):
                 cell_new      = np.dot(cell_old, def_matrix)
 
                 if self.verbose:
-                   print('raitio %.3f    Lv_matrix        eta_mtrix          def_matrix'%r)
-                   #box_center(ch='raitio %.3f'%r,fill=' ',sp=' ')
+                   box_center('raitio %.3f    Lv_matrix        eta_mtrix          def_matrix'%r)
                    prettyprint(np.hstack((Lv_matrix,eps_matrix,def_matrix)),precision=5)
                 #------------------------------------------------------------------------------------------
                 cont2 = cont2 + 1
@@ -739,6 +959,7 @@ def post_elastic(args):
     logo()
     skip=args.skip
     order=args.order
+    properties = args.properties
     workdir=os.path.join(os.getcwd(), args.properties+'_'+args.approach)
     elat=loadfn(os.path.join(workdir,felastic))
     if isinstance(elat,Elastic):
@@ -753,7 +974,11 @@ def post_elastic(args):
        print(args)
        elat.verbose=args.verbose
     plot=args.plot
-    elat.calc_elastic_constant(poly_order=order,skip=skip,plot=plot)
+
+    if properties == 'elc':
+       elat.calc_elastic_constant(poly_order=order,skip=skip,finput='input.yaml',plot=plot)
+    else:
+       elat.calc_stress_strain(skip=skip,finput='input.yaml',plot=plot)
 
 #--------------------------------------------------------------------------------------------------
 def init_elastic(args):
@@ -763,26 +988,32 @@ def init_elastic(args):
     numb_points =args.number
     properties = args.properties
     max_lag_strain =args.maxs
-    #if approach == 'stress':
-    #   max_lag_strain = min([max_lag_strain,0.005])
+    direction=args.direction
     verbose=args.verbose
     back=args.back
+    lag_strain_range=args.ranges
     workdir=os.path.join(os.getcwd(), args.properties+'_'+args.approach)
-    direction=args.direction
     elat=Elastic(structure,approach=approach,properties=properties,workdir=workdir,verbose=verbose)
+    #if approach == 'stress':
+    #   max_lag_strain = min([max_lag_strain,0.005])
     print(elat)
     if args.verbose:
        print('Default parameter for Elastic calculation init:')
        print(args)
-    elat.get_deformed_structure(numb_points,max_lag_strain,direction=direction,back=back)
-
+    if properties == 'elc':
+       elat.set_deformed_structure_for_elc(numb_points,max_lag_strain,back=back)
+    else:
+       if lag_strain_range:
+          max_lag_strain=None
+       elat.set_deformed_structure_for_ss(numb_points,max_lag_strain,lag_strain_range,direction,back=back)
+        
 #--------------------------------------------------------------------------------------------------
 if __name__=="__main__":
    st=Structure.from_file('POSCAR')
    elat=Elastic(st,approach='energy',properties='elc',verbose=True)
-   sts=elat.get_deformed_structure(9,0.02,back=False) 
-   #sts=elat.get_deformed_structure(6,0.1,workdir='test1',back=True) 
-   #sts=elat.get_deformed_structure(6,0.4,back=False) 
+   sts=elat.set_deformed_structure_for_elc(9,0.02,back=False) 
+   #sts=elat.set_deformed_structure_for_elc(6,0.1,workdir='test1',back=True) 
+   #sts=elat.set_deformed_structure_for_elc(6,0.4,back=False) 
    elat1=Elastic.from_dict(elat.as_dict())
    print(elat1)
    #print(elat1.calc_elastic_constant(skip=True))
