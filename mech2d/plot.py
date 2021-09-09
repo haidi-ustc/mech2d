@@ -1,25 +1,29 @@
 #!/usr/bin/env python
-#    elastic2d is free software: you can redistribute it and/or modify
+#    mech2d is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 
-#    elastic2d is distributed in the hope that it will be useful,
+#    mech2d is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 
 #    You should have received a copy of the GNU General Public Licensea
-#    along with elastic2d.  If not, see <http://www.gnu.org/licenses/>.
+#    along with mech2d.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import os,string
 import numpy as np
-import string
+import matplotlib as mpl
+mpl.use('Agg')
+import matplotlib.pyplot as plt
 from monty.serialization import  loadfn,dumpfn
+from mech2d.utils import prettyprint,box_center
 
+debug=False
+class Plot(object):
 
-def Plot(object):
-    def __init__(data='result.json'):
+    def __init__(self,data='result.json'):
         if data=='result.json':
            self._data=self.load_result()      
         else:
@@ -30,29 +34,72 @@ def Plot(object):
              d=json.loads(f.read())
         self.YV=d['YV']
         self.SS=d['SS']
-
-    def load_data(data):
+        
+    def load_data(self,data):
         if os.path.isfile(data):
            return np.loadtxt(data)
         if isinstance(data,list):
            return np.array(data)
-        
-    def polar_plot_EV(self,font_dict=None,figsize=None,skip=[1,1,1]):
-         
-        import matplotlib.pyplot as plt
+
+    def _set_fig(self,font_dict={},figsize=(8,6)):
+
         if font_dict:
            font = font_dict
         else:
            font =   {'family': 'serif', 'size': 14, 'weight':'bold'}
         plt.rc('font', **font)
-       
-        if figsize:
-           pass
-        else:
-           figsize=(8,6) 
-        fig = plt.figure(figsize=figsize) # width , heighth
-        
-        ax=fig.add_subplot(121, projection='polar')# ,facecolor="lightgoldenrodyellow")
+        self.fig = plt.figure(figsize=figsize) # width , heighth
+    
+    def energy_strain_plot(self,font_dict={},figsize=(8,6),order=4,fname='Energy_Strain.jpg'):
+ 
+        self._set_fig(font_dict=font_dict,figsize=figsize)
+        ax=self.fig.add_subplot(111)
+        strain=self._data[:,0]*100
+        energy=self._data[:,1]
+        if debug:
+           prettyprint(self._data)
+        strain_min=strain.min()*1.01
+        strain_max=strain.max()*1.01
+        strain_vals=np.linspace(strain_min,strain_max,100)
+        coeff=np.polyfit(strain.copy(),energy.copy(),order)
+        poly=np.poly1d(coeff)
+        energy_vals=poly(strain_vals)
+
+        ax.scatter(strain,energy,marker='o',facecolor='r',edgecolor='k',alpha=0.7)
+        ax.plot(strain_vals,energy_vals,linestyle='--',alpha=0.5)
+        ax.set_xlabel('Lagrangian strain (%)') 
+        ax.set_ylabel('Energy (eV)')
+        plt.savefig(fname,format='jpg',dpi=300)
+        #plt.show()
+ 
+    def stress_strain_plot(self,font_dict={},figsize=(18,6),order=[3,3,3],fname='LStress_Strain.jpg'):
+        self._set_fig(font_dict=font_dict,figsize=figsize)
+        if debug:
+           prettyprint(self._data)
+        strain=self._data[:,0]*100
+        energy_XX=self._data[:,1]
+        energy_YY=self._data[:,2]
+        energy_XY=self._data[:,6]
+        strain_min=strain.min()*1.01
+        strain_max=strain.max()*1.01
+        strain_vals=np.linspace(strain_min,strain_max,100)
+        energies=[energy_XX,energy_YY,energy_XY]
+        for ii,energy in enumerate(energies):
+            ax=self.fig.add_subplot(1,3,ii+1)
+            coeff=np.polyfit(strain.copy(),energy.copy(),order[ii])
+            poly=np.poly1d(coeff)
+            energy_vals=poly(strain_vals)
+            ax.scatter(strain,energy,marker='o',facecolor='r',edgecolor='k',alpha=0.7)
+            ax.plot(strain_vals,energy_vals,linestyle='--',alpha=0.5)
+            ax.set_xlabel('Lagrangian strain (%)') 
+            ax.set_ylabel('Stress (GPa)')
+        plt.savefig(fname,format='jpg',dpi=300)
+        #plt.show()
+
+    def polar_plot_YV(self,font_dict={},figsize=(8,6),skip=[1,1,1]):
+         
+        self._set_fig(font_dict=font_dict,figsize=figsize)
+        ax=self.fig.add_subplot(121, projection='polar')# ,facecolor="lightgoldenrodyellow")
         theta= f[0::skip[0],0]
         Y=f[0::skip[0],1]
         ax.plot(theta, Y, color="tab:orange", lw=1, ls="--", marker='h',alpha=0.6, label="$E$")
@@ -61,7 +108,7 @@ def Plot(object):
         angle = np.deg2rad(67.5)
         ax.legend(loc="lower left", bbox_to_anchor=(.5 + np.cos(angle)/2, .5 + np.sin(angle)/2))
         
-        ax1=fig.add_subplot(122, projection='polar') #,facecolor="lightgoldenrodyellow")
+        ax1=self.fig.add_subplot(122, projection='polar') #,facecolor="lightgoldenrodyellow")
         ax1.tick_params(grid_color="palegoldenrod")
         V=f[:,2]
         T=f[:,0]
@@ -87,9 +134,7 @@ def Plot(object):
         if len(Vn)>0:
            ax1.text(-0.25, 1.1, '('+string.ascii_lowercase[1]+')', transform=ax1.transAxes,size=20, weight='bold')
         plt.tight_layout()
-        plt.savefig('EV.jpg',format='jpg',dpi=300)
+        plt.savefig('YV.jpg',format='jpg',dpi=300)
         
         #plt.show()
-def plot_elastic(args):
-    
-    plot=Plot()
+

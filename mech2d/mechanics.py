@@ -27,6 +27,7 @@ from mech2d import log
 from mech2d.constants import Len, eVToNpm
 from mech2d.utils import prettyprint,box_center
 from mech2d.analysis import Analysis
+from mech2d.plot import Plot
 from mech2d.logo import logo
 
 #--------------------------------------------------------------------------------------------------
@@ -271,7 +272,7 @@ class Elastic(MSONable):
         dumpfn(d,filename,indent=indent) 
    
 #--------------------------------------------------------------------------------------------------
-    def calc_elastic_constant(self,poly_order=4,skip=False,finput='input.yaml'):
+    def calc_elastic_constant(self,poly_order=4,skip=False,finput='input.yaml',plot=False):
         if self.approach == 'energy':
            if isinstance(poly_order,int):
               poly_order=[poly_order]*len(self.lagrangian_strain_list)
@@ -315,14 +316,16 @@ class Elastic(MSONable):
                                                     numb_points=numb_points,
                                                     max_lag_strain=max_lag_strain,
                                                     workdir=workdir,
-                                                    code=code)
+                                                    code=code,
+                                                    plot=plot)
            C = eVToNpm*C/area # from eV/a^2 to N/m
         elif self.approach=='stress':
            C=self.calc_elastic_constant_from_stress(poly_order=poly_order,skip=skip,
                                                     numb_points=numb_points,
                                                     max_lag_strain=max_lag_strain,
                                                     workdir=workdir,
-                                                    code=code)
+                                                    code=code,
+                                                    plot=plot)
 
            if self.verbose:
               print('height %.3f'%height)
@@ -335,7 +338,7 @@ class Elastic(MSONable):
         ana.summary()
 
 #--------------------------------------------------------------------------------------------------
-    def calc_elastic_constant_from_stress(self,poly_order,skip,numb_points,max_lag_strain,workdir,code):
+    def calc_elastic_constant_from_stress(self,poly_order,skip,numb_points,max_lag_strain,workdir,code,plot):
         for i in range(1,len(self.lagrangian_strain_list)+1):
             Ls_list= Ls_Dic[self.lagrangian_strain_list[i-1]]
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
@@ -415,7 +418,13 @@ class Elastic(MSONable):
         for i in range(1,len(self.lagrangian_strain_list)+1):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             fL=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian-stress.dat')
-            print(fL)
+            if plot: 
+               try:
+                  _plot=Plot(data=fL)
+                  _plot.stress_strain_plot(order=poly_order,
+                                           fname=os.path.join(Defn,os.path.basename(Defn)+'_LStress_Strain.jpg'))
+               except:
+                  print('WARNING: Plot failed, skip !!!')
             ret=np.loadtxt(fL,skiprows=1) 
             ld="strain          XX           YY           ZZ           YZ           XZ           XY".split()
             for idx in range(6):
@@ -483,7 +492,7 @@ class Elastic(MSONable):
         return C
 
 #--------------------------------------------------------------------------------------------------
-    def calc_elastic_constant_from_energy(self,poly_order,skip,numb_points,max_lag_strain,workdir,code):
+    def calc_elastic_constant_from_energy(self,poly_order,skip,numb_points,max_lag_strain,workdir,code,plot):
 
         for i in range(1,self.number_elastic_tensor+1):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
@@ -526,6 +535,13 @@ class Elastic(MSONable):
         for i in range(1,self.number_elastic_tensor+1):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             fEV=os.path.join(Defn,os.path.basename(Defn)+'_Energy.dat')
+            if plot: 
+               try:
+                  _plot=Plot(data=fEV)
+                  _plot.energy_strain_plot(order=poly_order[i-1],
+                                           fname=os.path.join(Defn,os.path.basename(Defn)+'_Energy_Strain.jpg'))
+               except:
+                  print('WARNING: Plot failed, skip !!!')
             ret=np.loadtxt(fEV) 
             if self.verbose:
                box_center("fitting data @ %s "%os.path.basename(Defn))
@@ -734,7 +750,8 @@ def post_elastic(args):
        print('Default parameter for Elastic calculation post:')
        print(args)
        elat.verbose=args.verbose
-    elat.calc_elastic_constant(poly_order=order,skip=skip)
+    plot=args.plot
+    elat.calc_elastic_constant(poly_order=order,skip=skip,plot=plot)
 
 #--------------------------------------------------------------------------------------------------
 def init_elastic(args):
@@ -756,8 +773,8 @@ def init_elastic(args):
        print('Default parameter for Elastic calculation init:')
        print(args)
     elat.get_deformed_structure(numb_points,max_lag_strain,direction=direction,back=back)
-    #--------------------------------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------------------------------
 if __name__=="__main__":
    st=Structure.from_file('POSCAR')
    elat=Elastic(st,approach='energy',properties='elc',verbose=True)

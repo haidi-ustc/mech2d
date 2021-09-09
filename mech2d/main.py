@@ -7,7 +7,6 @@ import sys
 import itertools
 from mech2d.mechanics import init_elastic,post_elastic
 from mech2d.calculation.runtask import run_elastic
-from mech2d.plot import plot_elastic
 from mech2d import NAME
 
 __author__ = "Haidi Wang"
@@ -43,7 +42,7 @@ To see the options for the sub-commands, type "m2d sub-command -h".""")
     parser_init.add_argument('-m','--maxs', type=float, default=0.05, help="For elastic constant calculation, it stands for the maximum Lagrangian strain, suggested value is [0.030, 0.150] for Energy approach, [0.0010, 0.0050] for Stress approach; for stress strain cuver calcuation, this value has no above limitation")
     parser_init.add_argument('-n','--number', type=int, default=5, help="The number of the deformed structures [odd number > 4].")
     #parser_init.add_argument('-o','--outdir', type=str, default=None, help="The output directory for the deformed structures.")
-    parser_init.add_argument('-d','--direction', type=str, default='x', choices=['xx','yy','bi','xy'], help="The direction used for stress strain curve,  default value: 'xx'. 'xx' for 'x' direction; 'yy' for 'y' direction; 'bi' for bi-axis strain and 'xy' for shear strain.")
+    parser_init.add_argument('-d','--direction', type=str, default='x', choices=['xx','yy','bi','xy'], help="The direction used for stress strain curve,  default value: 'xx'. 'xx' for 'x' direction; 'yy' for 'y' direction; 'bi' for bi-Axis strain and 'xy' for shear strain.")
     parser_init.add_argument('-p','--properties', type=str, default='elc', choices=['elc', 'ssc'], help="What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.")
     parser_init.add_argument('-v','--verbose', action="store_true", help="print verbose information or not.")
     parser_init.add_argument('-b','--back', action="store_true" , help="Whether back the old folder? default value: False.")
@@ -54,7 +53,7 @@ To see the options for the sub-commands, type "m2d sub-command -h".""")
     #run 
     parser_run= subparsers.add_parser(
         "run", help="Run the DFT calculation for deformed structures.")
-    parser_run.add_argument('-s','--approach', type=str, default='energy', choices=['stress', 'energy'],help="Support 'Energy' or 'Stress' approach.")
+    parser_run.add_argument('-a','--approach', type=str, default='energy', choices=['stress', 'energy'],help="Support 'Energy' or 'Stress' approach.")
     parser_run.add_argument('-p','--properties', type=str, default='elc', choices=['elc', 'ssc'], help="What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.")
     parser_run.add_argument("input", type=str,help="input file for supplying information about DFT calculation, json/yaml format. The 'machine', 'tasks', 'code', 'resources' should be supplied.")
     parser_run.add_argument('-v','--verbose', action="store_true", help="print verbose information or not.")
@@ -68,18 +67,10 @@ To see the options for the sub-commands, type "m2d sub-command -h".""")
     parser_post.add_argument('-p','--properties', type=str, default='elc', choices=['elc', 'ssc'], help="What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.")
     parser_post.add_argument('--skip', action="store_true" , help="Whether skip the data parsing ? if true, it means the Def_*_Energy.dat should be exists in corresponding folder. default value: False.")
     parser_post.add_argument('-o','--order', type=int, default=4, help="The order of polynomial for fitting. Default value: 4")
+    parser_post.add_argument('--plot', action="store_true", help="plot the figures")
     parser_post.add_argument('-v','--verbose', action="store_true", help="print verbose information or not.")
     parser_post.set_defaults(func=post_elastic)
 
-    #-------------
-    #plot
-    parser_plot = subparsers.add_parser(
-        "plot", help="Plot the results")
-    parser_plot.add_argument('-f','--filename', type=str, default='mech2d', help="The filename of output figure.")
-    parser_plot.add_argument('-d','--datafile', type=str, default='result.json', help="The data file for plotting.")
-    parser_plot.add_argument('-p','--properties', type=str, default='elc', choices=['elc', 'ssc'], help="What do you want to plot? elastic constant or stress strain curve? default value: 'elc'.")
-    parser_plot.add_argument('-v','--verbose', action="store_true", help="print verbose information or not.")
-    parser_plot.set_defaults(func=plot_elastic)
 
     try:
         import argcomplete
