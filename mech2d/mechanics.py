@@ -648,7 +648,7 @@ class Elastic(MSONable):
         pwd = os.getcwd() 
     
         cell_old= cell.copy()
-        create_path(self.workdir,back=False)
+        create_path(self.workdir,back=back)
         fdis = open(os.path.join(self.workdir,'Deformed_Parameters'),'w')
         cont1= 0
         for i in self.lagrangian_strain_list:
