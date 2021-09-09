@@ -51,20 +51,6 @@ def create_path (path,back=False) :
     os.makedirs (path)
     return path
 
-def sortlist(lst1, lst2):
-    temp = copy.copy(lst1)
-
-    lst3 = []
-    lst4 = []
-
-    temp.sort()
-
-    for i in range(len(lst1)):
-        lst3.append(lst1[lst1.index(temp[i])])
-        lst4.append(lst2[lst1.index(temp[i])])
-
-    return lst3, lst4
-
 def prettyprint(c,precision=3):
     #c=np.array(c)
     
