@@ -68,7 +68,7 @@ class Elastic(MSONable):
     A elastic object for initializaion and post-process.  
     """
 
-    def __init__(self,structure,strategy='energy',properties='elc', workdir=None,verbose=False):
+    def __init__(self,structure,approach='energy',properties='elc', workdir=None,verbose=False):
         """
         Create an Elastic obj. from structure with given condition
         Args: 
@@ -83,11 +83,11 @@ class Elastic(MSONable):
         else:
            raise RuntimeError('structure must be file name or Pymatgen Structure obj')
         
-        self._strategy = strategy
+        self._approach = approach
         self._properties = properties
         self._verbose = verbose
         if workdir is None:
-           self.workdir =os.path.join(os.getcwd(), self.properties+'_'+self.strategy)
+           self.workdir =os.path.join(os.getcwd(), self.properties+'_'+self.approach)
         else:
            self.workdir=workdir
 
@@ -99,7 +99,7 @@ class Elastic(MSONable):
            ret+= repr(self.structure.lattice)
     
         ret+= '\n'+'-'*Len
-        ret+= "\nstrategy    : %s "%self.strategy
+        ret+= "\napproach    : %s "%self.approach
         ret+= "\nproperties  : %s "%self.properties
         ret+= "\nlattice     : %s "%LT_Dic[self.lattice_type]
         ret+= "\nnumber SOEC : %s "%self.number_elastic_tensor
@@ -122,8 +122,8 @@ class Elastic(MSONable):
         return self._properties
       
     @property
-    def strategy(self):
-        return self._strategy
+    def approach(self):
+        return self._approach
 
     @property
     def structure(self):
@@ -208,7 +208,7 @@ class Elastic(MSONable):
 
     @property
     def lagrangian_strain_list(self):
-       if  self.strategy == 'energy':
+       if  self.approach == 'energy':
 
            if self.lattice_type == 'O':
                Lag_strain_list = ['01','02','03','04','05','06']
@@ -221,7 +221,7 @@ class Elastic(MSONable):
            else:
               raise RuntimeError('ERROR: Unknown 2D bravais lattice')
     
-       elif  self.strategy =='stress':
+       elif  self.approach =='stress':
 
            if self.lattice_type == 'O':
                Lag_strain_list = ['01','02','05']
@@ -234,7 +234,7 @@ class Elastic(MSONable):
            else: 
               raise RuntimeError('ERROR: Unknown 2D bravais lattice')
        else:
-           raise RuntimeError('ERROR: Unknown strategy for elastic constant calcuator')
+           raise RuntimeError('ERROR: Unknown approach for elastic constant calcuator')
        return Lag_strain_list
           
     def as_dict(self) :
@@ -249,7 +249,7 @@ class Elastic(MSONable):
             "@module": self.__class__.__module__,
             "@class": self.__class__.__name__,
             "structure": self.structure,
-            "strategy": self.strategy,
+            "approach": self.approach,
             "properties": self.properties,
             "lattice": self.lattice_type,
             "SOEC": self.number_elastic_tensor,
@@ -260,7 +260,7 @@ class Elastic(MSONable):
    
     @classmethod
     def from_dict(cls, d):
-        return cls(d['structure'],strategy=d['strategy'], properties=d['properties'],
+        return cls(d['structure'],approach=d['approach'], properties=d['properties'],
                    workdir=d['workdir'], verbose = d['verbose'])
 
     def to(self,filename,option={},fmt=None,indent=4):
@@ -272,7 +272,7 @@ class Elastic(MSONable):
    
 #--------------------------------------------------------------------------------------------------
     def calc_elastic_constant(self,poly_order=4,skip=False,finput='input.yaml'):
-        if self.strategy == 'energy':
+        if self.approach == 'energy':
            if isinstance(poly_order,int):
               poly_order=[poly_order]*len(self.lagrangian_strain_list)
            elif isinstance(poly_order,list):
@@ -281,7 +281,7 @@ class Elastic(MSONable):
            else:
               raise RuntimeError('ERROR: Polynomial order must be integer or list of integer with length = %d '
                                  %len(len(self.lagrangian_strain_list)))
-        elif self.strategy=='stress':
+        elif self.approach=='stress':
            if isinstance(poly_order,int):
               poly_order=[poly_order]*6
            elif isinstance(poly_order,list):
@@ -292,7 +292,7 @@ class Elastic(MSONable):
                                 %len(len(self.lagrangian_strain_list)))
              
         else:
-           raise RuntimeError('ERROR: Unkonwn strategy! The supported are "energy" or "stress"')
+           raise RuntimeError('ERROR: Unkonwn approach! The supported are "energy" or "stress"')
 
         pwd=os.getcwd()
         inputs=loadfn(os.path.join(pwd,finput))
@@ -310,14 +310,14 @@ class Elastic(MSONable):
         area = np.linalg.norm(np.cross(_cell[0],_cell[1]))
         
         #print(height,V0/area)
-        if self.strategy=='energy':
+        if self.approach=='energy':
            C=self.calc_elastic_constant_from_energy(poly_order=poly_order,skip=skip,
                                                     numb_points=numb_points,
                                                     max_lag_strain=max_lag_strain,
                                                     workdir=workdir,
                                                     code=code)
            C = eVToNpm*C/area # from eV/a^2 to N/m
-        elif self.strategy=='stress':
+        elif self.approach=='stress':
            C=self.calc_elastic_constant_from_stress(poly_order=poly_order,skip=skip,
                                                     numb_points=numb_points,
                                                     max_lag_strain=max_lag_strain,
@@ -328,7 +328,7 @@ class Elastic(MSONable):
               print('height %.3f'%height)
            C = -C*height/100 # from eV/a^2 to N/m
         else:
-           raise RuntimeError('ERROR: Unkonwn strategy! The supported are "energy" or "stress"')
+           raise RuntimeError('ERROR: Unkonwn approach! The supported are "energy" or "stress"')
 
         # unit convert 
         ana = Analysis(self.structure,C)
@@ -617,9 +617,9 @@ class Elastic(MSONable):
     
         ptn = int((numb_points-1)/2)
 
-        if self.strategy == 'energy':
+        if self.approach == 'energy':
            interval = 0.0001
-        if self.strategy == 'stress':
+        if self.approach == 'stress':
            interval = 0.00001
         if (max_lag_strain/ptn <= interval):
            raise RuntimeError('ERROR: The interval of the strain values is < '+ str(interval) +\
@@ -665,8 +665,8 @@ class Elastic(MSONable):
                     r = max_lag_strain*s/numb_points
                 
                 if (s==0):
-                    if (self.strategy == 'Energy'): r = 0.0001
-                    if (self.strategy == 'Stress'): r = 0.00001
+                    if (self.approach == 'Energy'): r = 0.0001
+                    if (self.approach == 'Stress'): r = 0.00001
         
                 Ls = np.zeros(6)
                 for i in range(6):
@@ -721,13 +721,13 @@ def post_elastic(args):
     logo()
     skip=args.skip
     order=args.order
-    workdir=os.path.join(os.getcwd(), args.properties+'_'+args.strategy)
+    workdir=os.path.join(os.getcwd(), args.properties+'_'+args.approach)
     elat=loadfn(os.path.join(workdir,felastic))
     if isinstance(elat,Elastic):
        pass
     else:
        elat=Elastic.from_dict(elat)
-    if elat.strategy == 'stress':
+    if elat.approach == 'stress':
        order = 3
     print(elat)
     if args.verbose:
@@ -740,17 +740,17 @@ def post_elastic(args):
 def init_elastic(args):
     logo()
     structure=args.config
-    strategy=args.strategy
+    approach=args.approach
     numb_points =args.number
     properties = args.properties
     max_lag_strain =args.maxs
-    #if strategy == 'stress':
+    #if approach == 'stress':
     #   max_lag_strain = min([max_lag_strain,0.005])
     verbose=args.verbose
     back=args.back
-    workdir=os.path.join(os.getcwd(), args.properties+'_'+args.strategy)
+    workdir=os.path.join(os.getcwd(), args.properties+'_'+args.approach)
     direction=args.direction
-    elat=Elastic(structure,strategy=strategy,properties=properties,workdir=workdir,verbose=verbose)
+    elat=Elastic(structure,approach=approach,properties=properties,workdir=workdir,verbose=verbose)
     print(elat)
     if args.verbose:
        print('Default parameter for Elastic calculation init:')
@@ -760,7 +760,7 @@ def init_elastic(args):
 
 if __name__=="__main__":
    st=Structure.from_file('POSCAR')
-   elat=Elastic(st,strategy='energy',properties='elc',verbose=True)
+   elat=Elastic(st,approach='energy',properties='elc',verbose=True)
    sts=elat.get_deformed_structure(9,0.02,back=False) 
    #sts=elat.get_deformed_structure(6,0.1,workdir='test1',back=True) 
    #sts=elat.get_deformed_structure(6,0.4,back=False) 

@@ -71,7 +71,7 @@ def run_elastic(args):
     tasks=inputs['tasks']
     code=inputs['code']
     rootdir=os.getcwd()
-    workdir=os.path.join(rootdir, args.properties+'_'+args.strategy)
+    workdir=os.path.join(rootdir, args.properties+'_'+args.approach)
     if not os.path.exists(os.path.join(workdir,felastic)):
        raise RuntimeError('ERROR: %s file not exits')
     with open(os.path.join(workdir,felastic),'r') as f:
