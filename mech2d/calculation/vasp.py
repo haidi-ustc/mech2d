@@ -94,10 +94,20 @@ class VASP(Calculator,MSONable):
 
         elif isinstance(kpoints,dict):
            if 'kspacing' in kpoints.keys():
-               if 'kgamma' in kpoints.keys():
-                   self.kpoints=get_kpoints(self.structure, kpoints['kspacing'], kpoints['kgamma'], twod=True) 
+               if kpoints['kspacing']>1:
+                  if 'kgamma' in kpoints.keys():
+                      _kpoints=Kpoints.automatic_density(self.structure,kpoints['kspacing'],force_gamma=True)
+                  else:
+                      _kpoints=Kpoints.automatic_density(self.structure,kpoints['kspacing'],force_gamma=False)
+                  # we assume vaccum along the z direction
+                  kpts=_kpoints.kpts.copy()
+                  kpts[0][-1]=1
+                  self.kpoints=Kpoints(kpts=kpts)
                else:
-                   self.kpoints=get_kpoints(self.structure, kpoints['kspacing'], False , twod=True) 
+                  if 'kgamma' in kpoints.keys():
+                      self.kpoints=get_kpoints(self.structure, kpoints['kspacing'], kpoints['kgamma'], twod=True) 
+                  else:
+                      self.kpoints=get_kpoints(self.structure, kpoints['kspacing'], False , twod=True) 
            else:
                self.kpoints=Kpoints.from_dict(kpoints)
 
@@ -150,18 +160,26 @@ class VASP(Calculator,MSONable):
 
     @staticmethod
     def get_energy(outputdir):     
+        fname=os.path.join(outputdir,'energy.json')
+        if os.path.exists(fname):
+           return loadfn(fname)
         try: 
            vr=Vasprun(os.path.join(outputdir,'vasprun.xml'))
            if vr.converged:
+              dumpfn(vr.final_energy,fname)
               return vr.final_energy
         except:
            return None
 
     @staticmethod
     def get_stress(outputdir):
+        fname=os.path.join(outputdir,'stress.json')
+        if os.path.exists(fname):
+           return loadfn(fname)
         try: 
            vr=Vasprun(os.path.join(outputdir,'vasprun.xml'))
            if vr.converged:
+              dumpfn(vr.ionic_steps[-1]['stress'],fname)
               return vr.ionic_steps[-1]['stress']
         except:
            return None

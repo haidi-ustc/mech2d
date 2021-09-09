@@ -8,3 +8,5 @@ test*
 */*/__pycache__
 */dep
 */_version.py
+*/_date.py
+check

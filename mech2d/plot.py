@@ -12,7 +12,7 @@
 #    You should have received a copy of the GNU General Public Licensea
 #    along with elastic2d.  If not, see <http://www.gnu.org/licenses/>.
 
-import matplotlib.pyplot as plt
+
 import numpy as np
 import string
 from monty.serialization import  loadfn,dumpfn
@@ -39,6 +39,7 @@ def Plot(object):
         
     def polar_plot_EV(self,font_dict=None,figsize=None,skip=[1,1,1]):
          
+        import matplotlib.pyplot as plt
         if font_dict:
            font = font_dict
         else:

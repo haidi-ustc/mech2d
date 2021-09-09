@@ -163,57 +163,36 @@ class Elastic(MSONable):
                         [
                         [1,0,0,0,0,0],
                         [0,1,0,0,0,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,0,0],
                         [0,0,0,1,0,0],
-                        [1,0,0,0,0,0],
-                        [0,1,0,0,0,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,1,0],
-                        [0,0,0,1,0,0],
-                        [0,0,0,0,1,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,0,0],
-                        [0,0,0,0,0,1],
+                        [1,1,0,0,0,0],
+                        [0,1,1,0,0,0],
+                        [0,0,0,1,1,0],
+                        [1,0,0,2,0,0],
+                        [0,1,0,0,2,0],
+                        [0,0,0,1,0,2],
                         ]
                         )
         elif self.lattice_type == 'CR' or self.lattice_type == 'R':
            #'c11 c12 c22 c66'
            return np.mat([
-                          [0,1,0,0],
-                          [0,0,1,0],
-                          [0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,0,0],
                           [1,1,0,0],
                           [0,1,1,0],
                           [0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,0,1]
+                          [1,0,0,0],
+                          [0,1,0,0],
+                          [0,0,0,2]
                          ]
                           )
         elif self.lattice_type == 'S':
            # 'c11 c12 c66'
            return np.mat([[1,0,0],
                           [0,1,0],
-                          [0,0,0],
-                          [0,0,0],
-                          [0,0,0],
-                          [0,0,1]]
+                          [0,0,2]]
                           )
         elif self.lattice_type == 'H':
            # 'c11 c12'
            return np.mat([[1,0],
                           [0,1],
-                          [0,0],
-                          [0,0],
-                          [0,0],
                           [1,-1]]
                           )
         else: 
@@ -249,11 +228,11 @@ class Elastic(MSONable):
        elif  self.strategy =='stress':
 
            if self.lattice_type == 'O':
-               Lag_strain_list = ['01','03','08']
+               Lag_strain_list = ['01','02','05']
            elif self.lattice_type == 'CR' or self.lattice_type == 'R':
-               Lag_strain_list = ['03','07']
+               Lag_strain_list = ['02','05']
            elif self.lattice_type == 'S':
-               Lag_strain_list = ['07']
+               Lag_strain_list = ['05']
            elif self.lattice_type == 'H':
                Lag_strain_list = ['05']
            else: 
@@ -374,8 +353,8 @@ class Elastic(MSONable):
                print("Skip parsing: \n%s \n%s"%(fL,fP) )
             else:
                with open(fL, 'w') as fidL, open(fP, 'w') as fidP:
-                    fidL.write(' Lag. strain          XX           YY           ZZ           YZ           XZ           XY \n')
-                    fidP.write(' Phy. strain          XX           YY           ZZ           YZ           XZ           XY \n')
+                    fidL.write('#Lag. strain          XX           YY           ZZ           YZ           XZ           XY \n')
+                    fidP.write('#Phy. strain          XX           YY           ZZ           YZ           XZ           XY \n')
                     for j in range(1, numb_points+1):
                         Defn_num = os.path.join(Defn, os.path.basename(Defn)+'_'+def_fmt2%j)
 
@@ -389,7 +368,11 @@ class Elastic(MSONable):
                                    print("ERROR: cannot parse energy from:\n%s"%Defn_num)
                                    os._exit(0)
                               
-                            #sig[2][2]=0
+                            sig[2][2]=0
+                            sig[0][2]=0
+                            sig[2][0]=0
+                            sig[2][1]=0
+                            sig[1][2]=0
                             s = j-(numb_points+1)/2
                             r = 2*max_lag_strain*s/(numb_points-1)
 
@@ -399,11 +382,10 @@ class Elastic(MSONable):
 
                             Lv = r*le
                             eps_matrix=self._get_eps_matrix(Lv.copy())
-                            i_matrix   = np.eye(3)
-                            def_matrix = i_matrix + eps_matrix
+                            def_matrix = np.eye(3) + eps_matrix
 
                             # calculate the Lagrangian stress from phyical stress and physical strain
-                            dm  = def_matrix
+                            dm  = def_matrix.copy()
                             idm = np.linalg.inv(dm)
                             tao = np.linalg.det(dm)*np.dot(idm,np.dot(sig,idm))
 
@@ -415,19 +397,19 @@ class Elastic(MSONable):
                                 strain = '%13.10f'%r
                             #print(sig)
                             #print(tao)
-                            fidP.write(strain +'   '+'%10.3f'%sig[0][0]\
-                                    +'   '+'%10.3f'%sig[1][1]\
-                                    +'   '+'%10.3f'%sig[2][2]\
-                                    +'   '+'%10.3f'%sig[1][2]\
-                                    +'   '+'%10.3f'%sig[0][2]\
-                                    +'   '+'%10.3f'%sig[0][1]+'\n')
+                            fidP.write(strain +'   '+'%10.8f'%sig[0][0]\
+                                              +'   '+'%14.8f'%sig[1][1]\
+                                              +'   '+'%14.8f'%sig[2][2]\
+                                              +'   '+'%14.8f'%sig[1][2]\
+                                              +'   '+'%14.8f'%sig[0][2]\
+                                              +'   '+'%14.8f'%sig[0][1]+'\n')
 
                             fidL.write(strain +'   '+'%14.8f'%tao[0][0]\
-                                    +'   '+'%14.8f'%tao[1][1]\
-                                    +'   '+'%14.8f'%tao[2][2]\
-                                    +'   '+'%14.8f'%tao[1][2]\
-                                    +'   '+'%14.8f'%tao[0][2]\
-                                    +'   '+'%14.8f'%tao[0][1]+'\n')
+                                              +'   '+'%14.8f'%tao[1][1]\
+                                              +'   '+'%14.8f'%tao[2][2]\
+                                              +'   '+'%14.8f'%tao[1][2]\
+                                              +'   '+'%14.8f'%tao[0][2]\
+                                              +'   '+'%14.8f'%tao[0][1]+'\n')
         
         if self.verbose:
            box_center('poly_order')
@@ -437,11 +419,18 @@ class Elastic(MSONable):
         for i in range(1,len(self.lagrangian_strain_list)+1):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             fL=os.path.join(Defn,os.path.basename(Defn)+'_Lagrangian-stress.dat')
- 
+            print(fL)
             ret=np.loadtxt(fL,skiprows=1) 
+            ld="strain          XX           YY           ZZ           YZ           XZ           XY".split()
             for idx in range(6):
+                if idx in [2,3,4]:
+                   continue
+                if self.verbose:
+                   box_center("fitting data: %s & %s "%(ld[0],ld[idx+1]))
+                   prettyprint(np.vstack((ret[:,0],ret[:,idx+1])),precision=5)
                 coeff = np.polyfit(ret[:,0], ret[:,idx+1], poly_order[idx])
                 sigma.append(float(coeff[poly_order[idx]-1]))
+            print(sigma)
 
         if self.verbose:
            box_center(ch='sigma')
@@ -451,6 +440,9 @@ class Elastic(MSONable):
        
         sigma = np.array(sigma)
         
+        if self.verbose:
+           box_center(' Matrix')
+           prettyprint(Matrix,precision=4)
         _C     = np.linalg.lstsq(Matrix,sigma,rcond=None)[0]
 
         if self.verbose:
@@ -539,7 +531,12 @@ class Elastic(MSONable):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             fEV=os.path.join(Defn,os.path.basename(Defn)+'_Energy.dat')
             ret=np.loadtxt(fEV) 
-            coeffs = np.polyfit(ret[:,0], ret[:,1], poly_order[i-1])
+            if self.verbose:
+               box_center("fitting data @ %s "%os.path.basename(Defn))
+               prettyprint(np.vstack((ret[:,0],ret[:,1]-ret[int(ret.shape[0]/2),1])).T,precision=5)
+            coeffs = np.polyfit(ret[:,0], ret[:,1],poly_order[i-1])
+            # shift or not are both fine
+            #coeffs = np.polyfit(ret[:,0], ret[:,1]-ret[int(ret.shape[0]/2),1], poly_order[i-1])  
             A2.append(coeffs[poly_order[i-1]-2])            
 
         if len(A2) != self.number_elastic_tensor:
