@@ -650,6 +650,7 @@ class Elastic(MSONable):
         cell_old= cell.copy()
         create_path(self.workdir,back=back)
         fdis = open(os.path.join(self.workdir,'Deformed_Parameters'),'w')
+        def_params={}
         cont1= 0
         for i in self.lagrangian_strain_list:
             Ls_list= Ls_Dic[i]
@@ -659,8 +660,10 @@ class Elastic(MSONable):
                print(Ls_list)
                print(_Ls_str)
             cont1  = cont1 + 1
-
+            def_key  = 'Def_'+def_fmt1%cont1
             Defn = os.path.join(pwd, self.workdir,'Def_'+def_fmt1%cont1)
+
+
             create_path(Defn,back=back)
             #os.chdir(Defn)
         
@@ -673,8 +676,10 @@ class Elastic(MSONable):
             else:
                loop_list = range(1,numb_points+1)
                
+            def_structs_list = []
             for s in loop_list:
 
+                def_structs_dict = {'Path':None,'eta':None,'Cell':None}
                 if self.properties == 'elc':
                     r = max_lag_strain*s/ptn
                 else:
@@ -685,8 +690,8 @@ class Elastic(MSONable):
                     if (self.approach == 'Stress'): r = 0.00001
         
                 Ls = np.zeros(6)
-                for i in range(6):
-                    Ls[i] = Ls_list[i]
+                for k in range(6):
+                    Ls[k] = Ls_list[k]
                 Lv = r*Ls
                  
                 if self.verbose:
@@ -719,15 +724,20 @@ class Elastic(MSONable):
                 Defn_cont2  = os.path.join(Defn, Defn.split('/')[-1]+'_'+def_fmt2%cont2)
         
                 print(Defn_cont2 + ',  eta = ' + str(r),file=fdis)
+                def_structs_dict['Path'] = Defn_cont2
+                def_structs_dict['eta']  = r
+                def_structs_dict['Cell'] = cell_new.tolist()
+                def_structs_list.append(def_structs_dict)
                 for j in range(3):
                     print('V'+str(j+1)+' --=>', '%15.10f'%(cell_new[j,0]), '%15.10f'%(cell_new[j,1]), '%15.10f'%(cell_new[j,2]),file=fdis)
                 print('\n',file=fdis)
-        
                 #--- Writing the structure file -----------------------------------------------------------
                 create_path(Defn_cont2,back=False)
                 new_struct=Structure(cell_new,self.structure.species,self.structure.frac_coords)
                 new_struct.to("POSCAR",os.path.join(Defn_cont2,Defn_cont2.split('/')[-1] +'.vasp'))
+            def_params[def_key]={'Path':Defn,'LagrangianStrain':Ls_str[i],'DeformedCell':def_structs_list}
         #--------------------------------------------------------------------------------------------------
+        dumpfn(def_params,os.path.join(self.workdir,'Deformed_Parameters.json'),indent=4)
         #os.chdir(pwd)
         fdis.close()
         self.to(os.path.join(self.workdir,felastic),option={"numb_points":numb_points,"max_lag_strain":max_lag_strain,"V0":V0})
