@@ -1,0 +1,127 @@
+{
+    "@module": "mech2d.mechanics",
+    "@class": "Elastic",
+    "structure": {
+        "@module": "pymatgen.core.structure",
+        "@class": "Structure",
+        "charge": null,
+        "lattice": {
+            "matrix": [
+                [
+                    3.297204,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    4.623351,
+                    -5.3e-05
+                ],
+                [
+                    0.0,
+                    0.0,
+                    20.02439
+                ]
+            ],
+            "a": 3.297204,
+            "b": 4.623351000303784,
+            "c": 20.02439,
+            "alpha": 90.0006568128429,
+            "beta": 90.0,
+            "gamma": 90.0,
+            "volume": 305.2544325771846
+        },
+        "sites": [
+            {
+                "species": [
+                    {
+                        "element": "P",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.5,
+                    0.910773,
+                    0.552521
+                ],
+                "xyz": [
+                    1.648602,
+                    4.210823260323001,
+                    11.063847716221002
+                ],
+                "label": "P",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "P",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.5,
+                    0.089227,
+                    0.447479
+                ],
+                "xyz": [
+                    1.648602,
+                    0.412527739677,
+                    8.960489283779001
+                ],
+                "label": "P",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "P",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    -0.0,
+                    0.410769,
+                    0.447479
+                ],
+                "xyz": [
+                    0.0,
+                    1.899129266919,
+                    8.960472242053001
+                ],
+                "label": "P",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "P",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.0,
+                    0.589231,
+                    0.552521
+                ],
+                "xyz": [
+                    0.0,
+                    2.724221733081,
+                    11.063864757947002
+                ],
+                "label": "P",
+                "properties": {}
+            }
+        ],
+        "@version": null
+    },
+    "approach": "energy",
+    "properties": "elc",
+    "lattice": "R",
+    "SOEC": 4,
+    "verbose": false,
+    "workdir": "/home/wang/dev/mech2d/check/alpha-P-R/elc_energy",
+    "numb_points": 9,
+    "max_lag_strain": 0.02,
+    "V0": 305.2544325771846
+}

@@ -1,0 +1,950 @@
+{
+    "Def_xx": {
+        "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx",
+        "LagrangianStrain": "(  eta,  0.0,  0.0,  0.0,  0.0,  0.0)",
+        "DeformedCell": [
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_001",
+                "eta": 0.0,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_002",
+                "eta": 0.01,
+                "Cell": [
+                    [
+                        3.3300128080803235,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_003",
+                "eta": 0.02,
+                "Cell": [
+                    [
+                        3.362501507257257,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_004",
+                "eta": 0.03,
+                "Cell": [
+                    [
+                        3.3946792883392582,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_005",
+                "eta": 0.04,
+                "Cell": [
+                    [
+                        3.426554910560936,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_006",
+                "eta": 0.05,
+                "Cell": [
+                    [
+                        3.458136729419394,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_007",
+                "eta": 0.06,
+                "Cell": [
+                    [
+                        3.4894327223259602,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_008",
+                "eta": 0.07,
+                "Cell": [
+                    [
+                        3.5204505120944556,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_009",
+                "eta": 0.08,
+                "Cell": [
+                    [
+                        3.55119738856097,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_010",
+                "eta": 0.09,
+                "Cell": [
+                    [
+                        3.581680328667416,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xx/Def_xx_011",
+                "eta": 0.1,
+                "Cell": [
+                    [
+                        3.6119060149824413,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            }
+        ]
+    },
+    "Def_yy": {
+        "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy",
+        "LagrangianStrain": "(  0.0,  eta,  0.0,  0.0,  0.0,  0.0)",
+        "DeformedCell": [
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_001",
+                "eta": 0.0,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_002",
+                "eta": 0.01,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.669355625630375,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_003",
+                "eta": 0.02,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.714911393434968,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_004",
+                "eta": 0.03,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.760031190797597,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_005",
+                "eta": 0.04,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.804727299947718,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_006",
+                "eta": 0.05,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.849011436992642,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_007",
+                "eta": 0.06,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.89289478788648,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_008",
+                "eta": 0.07,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.936388041365477,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_009",
+                "eta": 0.08,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.979501419263337,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_010",
+                "eta": 0.09,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        5.0222447046724525,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_yy/Def_yy_011",
+                "eta": 0.1,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        5.064627267913992,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            }
+        ]
+    },
+    "Def_xy": {
+        "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy",
+        "LagrangianStrain": "(  0.0,  0.0,  0.0,  0.0,  0.0, 2eta)",
+        "DeformedCell": [
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_001",
+                "eta": 0.0,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_002",
+                "eta": 0.01,
+                "Cell": [
+                    [
+                        3.2970391191897956,
+                        0.03297368889052802,
+                        0.0
+                    ],
+                    [
+                        0.046235822080075005,
+                        4.6231198035503,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_003",
+                "eta": 0.02,
+                "Cell": [
+                    [
+                        3.296544229202489,
+                        0.06595727805476871,
+                        0.0
+                    ],
+                    [
+                        0.09248552635863386,
+                        4.622425867076334,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_004",
+                "eta": 0.03,
+                "Cell": [
+                    [
+                        3.2957185858294906,
+                        0.09896070250976778,
+                        0.0
+                    ],
+                    [
+                        0.13876304375138374,
+                        4.621268147046214,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_005",
+                "eta": 0.04,
+                "Cell": [
+                    [
+                        3.2945609434751533,
+                        0.13199396707608,
+                        0.0
+                    ],
+                    [
+                        0.1850824030527567,
+                        4.619644896881356,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_006",
+                "eta": 0.05,
+                "Cell": [
+                    [
+                        3.293069547244377,
+                        0.16506718217501723,
+                        0.0
+                    ],
+                    [
+                        0.23145778113093646,
+                        4.617553655861706,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_007",
+                "eta": 0.06,
+                "Cell": [
+                    [
+                        3.291242121665818,
+                        0.19819060067390504,
+                        0.0
+                    ],
+                    [
+                        0.27790355459240607,
+                        4.614991233313372,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_008",
+                "eta": 0.07,
+                "Cell": [
+                    [
+                        3.2890758559416535,
+                        0.23137465615280206,
+                        0.0
+                    ],
+                    [
+                        0.3244343534396761,
+                        4.6119536879258005,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_009",
+                "eta": 0.08,
+                "Cell": [
+                    [
+                        3.2865673854460593,
+                        0.26463000310161233,
+                        0.0
+                    ],
+                    [
+                        0.3710651174358161,
+                        4.608436301808874,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_010",
+                "eta": 0.09,
+                "Cell": [
+                    [
+                        3.28371276928836,
+                        0.29796755937905595,
+                        0.0
+                    ],
+                    [
+                        0.41781115564057236,
+                        4.60443354903188,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_xy/Def_xy_011",
+                "eta": 0.1,
+                "Cell": [
+                    [
+                        3.2805074634425924,
+                        0.33139855153984876,
+                        0.0
+                    ],
+                    [
+                        0.46468820996829785,
+                        4.5999390579456945,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            }
+        ]
+    },
+    "Def_bi": {
+        "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi",
+        "LagrangianStrain": "(  eta,  eta,  0.0,  0.0,  0.0,  0.0)",
+        "DeformedCell": [
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_001",
+                "eta": 0.0,
+                "Cell": [
+                    [
+                        3.297204,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.623351,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_002",
+                "eta": 0.01,
+                "Cell": [
+                    [
+                        3.3300128080803235,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.669355625630375,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_003",
+                "eta": 0.02,
+                "Cell": [
+                    [
+                        3.362501507257257,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.714911393434968,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_004",
+                "eta": 0.03,
+                "Cell": [
+                    [
+                        3.3946792883392582,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.760031190797597,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_005",
+                "eta": 0.04,
+                "Cell": [
+                    [
+                        3.426554910551233,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.804727299934113,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_006",
+                "eta": 0.05,
+                "Cell": [
+                    [
+                        3.458136729419394,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.849011436992642,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_007",
+                "eta": 0.06,
+                "Cell": [
+                    [
+                        3.489432722339723,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.892894787905778,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_008",
+                "eta": 0.07,
+                "Cell": [
+                    [
+                        3.5204505120944556,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.936388041365477,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_009",
+                "eta": 0.08,
+                "Cell": [
+                    [
+                        3.55119738856097,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.979501419263337,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_010",
+                "eta": 0.09,
+                "Cell": [
+                    [
+                        3.581680328667416,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        5.0222447046724525,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            },
+            {
+                "Path": "/home/wang/dev/mech2d/check/alpha-P-R/ssc_stress/Def_bi/Def_bi_011",
+                "eta": 0.1,
+                "Cell": [
+                    [
+                        3.6119060149824413,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        5.064627267913992,
+                        -5.3e-05
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        20.02439
+                    ]
+                ]
+            }
+        ]
+    }
+}
