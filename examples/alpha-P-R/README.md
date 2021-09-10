@@ -1,13 +1,15 @@
-# This is an exmple for Black phosphorene 
+### This is an exmple for Black phosphorene 
+
 * To Test the program:
 
 change the workdir variable in following files to your current directory
 
+```
 ./elc_energy/Mech2D.json
 ./elc_stress/Mech2D.json
 ./ssc_stress/Mech2D.json
-
-if your current work directory (get it by "pwd" command) is :
+```
+if your current work directory (get it by `pwd` command) is :
 
 /home/zhangsan/mech2d/examples/alpha-P-R
 
