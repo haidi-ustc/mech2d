@@ -18,7 +18,6 @@ import numpy as np
 from monty.json import MSONable
 from pymatgen.core import Structure
 from monty.serialization import loadfn,dumpfn
-from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from mech2d.bravais import Bravais2D
 from mech2d.utils import create_path
@@ -497,8 +496,7 @@ class Elastic(MSONable):
                                 strain ='+%12.10f'%r
                             else:
                                 strain = '%13.10f'%r
-                            #print(sig)
-                            #print(tao)
+
                             fidP.write(strain +'   '+'%10.8f'%sig[0][0]\
                                               +'   '+'%14.8f'%sig[1][1]\
                                               +'   '+'%14.8f'%sig[2][2]\
@@ -540,7 +538,6 @@ class Elastic(MSONable):
                    prettyprint(np.vstack((ret[:,0],ret[:,idx+1])),precision=5)
                 coeff = np.polyfit(ret[:,0], ret[:,idx+1], poly_order[idx])
                 sigma.append(float(coeff[poly_order[idx]-1]))
-            #print(sigma)
 
         if self.verbose:
            box_center(ch='sigma')
@@ -603,7 +600,6 @@ class Elastic(MSONable):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
             if  not os.path.exists(Defn):
                 raise RuntimeError('ERROR: The '+ Defn +' directory not found.')
-            #os.chdir(Defn)
             # use the text format, easy use for users with other DFT code
             fEV=os.path.join(Defn,os.path.basename(Defn)+'_Energy.dat')
 
@@ -617,7 +613,6 @@ class Elastic(MSONable):
                         Defn_num = os.path.join(Defn, os.path.basename(Defn)+'_'+def_fmt2%j)
 
                         if (os.path.exists(Defn_num)):
-                            #os.chdir(Defn_num)
                             if code=='VASP': 
                                ret=VASP.get_energy(Defn_num)
                                if ret:
@@ -758,7 +753,7 @@ class Elastic(MSONable):
            loop_list = range(1,ptn+1)
 
         if self.verbose:
-           box_center("ration list")
+           box_center("ratio list")
            print(len(rs),len(loop_list))
            print(loop_list)   
         cell  = self._struct.lattice.matrix.copy()
