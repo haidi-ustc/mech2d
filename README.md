@@ -22,7 +22,7 @@ python setup.py install
 
 ## Usage
 
-The calculation of mechanical properties can be divided into three steps:
+The calculation of mechanical properties can be divided into three stages:
 
 **init** , **run** and **post** 
 
@@ -31,8 +31,30 @@ all of operation in mech2d software is carried out by command line arguments, to
 ```
 m2d -h
 ```
+it shows
 
-* the **init** step used to generate the deformed structures. 
+```
+usage: m2d [-h] [-v] {init,run,post} ...
+
+Desctiption:
+------------
+mech2d is a convenient script that use to calculate the mechanical properties of
+2D materials, including EOS, Stress-Strain Curve, elastic constants and revalant
+properties. The script works based on several sub-commands with their own options.
+To see the options for the sub-commands, type "m2d sub-command -h".
+
+positional arguments:
+  {init,run,post}
+    init           Generating initial data for elastic systems.
+    run            Run the DFT calculation for deformed structures.
+    post           Post processing for elastic calculation.
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -v, --version    Display version
+```
+
+* the **init** stage used to generate the deformed structures. 
 
 To obtain the deformed structures according to different symmetry, a relaxed structure if needed. Suppose you have a POSCAR file in current folder, using the following command to generate the deformed structures by stress fitting approach:
 ```bash
@@ -78,9 +100,9 @@ if the `-m` parameter exist, it means the Lagrangian stress equals  [-max,+max]
 
 > tips:  .vasp .xsf .cif format files are all supported
 
-* the **run** step used to conduct the DFT calculation. 
+* the **run** stage used to conduct the DFT calculation. 
 
-For this step, the running command is :
+For this stage, the running command is :
 
 ```
 m2d run -a stress input.yaml
@@ -155,9 +177,9 @@ code:
   Yaml format is much easier to read.
 
 
-* the **post** step used analysis the result and plot the result. 
+* the **post** stage used analysis the result and plot the result. 
 
-For this step, the running command is :
+For this stage, the running command is :
 
 ```
 m2d post -a stress --plot
