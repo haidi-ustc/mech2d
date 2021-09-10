@@ -54,6 +54,37 @@ optional arguments:
   -v, --version    Display version
 ```
 
+or use subcomand help
+```
+m2d init -h
+```
+it shows 
+```
+usage: m2d init [-h] [-c CONFIG] [-a {stress,energy}] [-m MAXS] [-n NUMBER] [-d {xx,yy,bi,xy} [{xx,yy,bi,xy} ...]] [-r RANGES [RANGES ...]]
+                [-p {elc,ssc}] [-v] [-b]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIG, --config CONFIG
+                        The structure filename. Supported format: ['.vasp','POSCAR','.cif','.xsf']
+  -a {stress,energy}, --approach {stress,energy}
+                        Support 'Energy' or 'Stress' approach.
+  -m MAXS, --maxs MAXS  For elastic constant calculation, it stands for the maximum Lagrangian strain, suggested value is [0.030, 0.150] for
+                        Energy approach, [0.0010, 0.0050] for Stress approach; for stress strain cuver calcuation, this value has no above
+                        limitation
+  -n NUMBER, --number NUMBER
+                        The number of the deformed structures [odd number > 4].
+  -d {xx,yy,bi,xy} [{xx,yy,bi,xy} ...], --direction {xx,yy,bi,xy} [{xx,yy,bi,xy} ...]
+                        The direction used for stress strain curve, default value: 'xx'. 'xx' for 'x' direction; 'yy' for 'y' direction; 'bi'
+                        for bi-Axis strain and 'xy' for shear strain.
+  -r RANGES [RANGES ...], --ranges RANGES [RANGES ...]
+                        The Lagrangian strain range used for stress-strain curve calculation. e.g. 0.0 0.2
+  -p {elc,ssc}, --properties {elc,ssc}
+                        What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.
+  -v, --verbose         print verbose information or not.
+  -b, --back            Whether back the old folder? default value: False.
+```
+
 * the **init** stage used to generate the deformed structures. 
 
 To obtain the deformed structures according to different symmetry, a relaxed structure if needed. Suppose you have a POSCAR file in current folder, using the following command to generate the deformed structures by stress fitting approach:
