@@ -21,14 +21,14 @@ install_requires=['dpdispatcher==0.3.39','pymatgen==2022.0.14']
 
 setuptools.setup(
     name=NAME,
-    #use_scm_version={'write_to': 'mech2d/_version.py'},
-    #setup_requires=['setuptools_scm'],
+    use_scm_version={'write_to': 'mech2d/_version.py'},
+    setup_requires=['setuptools_scm'],
     author="Haidi Wang",
     author_email="haidi@hfut.edu.cn",
     description="mech2d: a calculator for two dimensional material mechanical properties",
     long_description=readme,
     long_description_content_type="text/markdown",
-   # url="https://github.com/",
+    url="https://gitee.com/haidi-hfut/mech2d",
     python_requires="~=3.6",
     packages=['mech2d', 
               'mech2d/calculation'
