@@ -54,7 +54,9 @@ optional arguments:
   -v, --version    Display version
 ```
 
-or use subcomand help
+* the **init** stage used to generate the deformed structures. 
+
+use subcomand to show the help information
 ```
 m2d init -h
 ```
@@ -76,7 +78,7 @@ optional arguments:
                         The number of the deformed structures [odd number > 4].
   -d {xx,yy,bi,xy} [{xx,yy,bi,xy} ...], --direction {xx,yy,bi,xy} [{xx,yy,bi,xy} ...]
                         The direction used for stress strain curve, default value: 'xx'. 'xx' for 'x' direction; 'yy' for 'y' direction; 'bi'
-                        for bi-Axis strain and 'xy' for shear strain.
+                        for bi-axis strain and 'xy' for shear strain.
   -r RANGES [RANGES ...], --ranges RANGES [RANGES ...]
                         The Lagrangian strain range used for stress-strain curve calculation. e.g. 0.0 0.2
   -p {elc,ssc}, --properties {elc,ssc}
@@ -84,8 +86,6 @@ optional arguments:
   -v, --verbose         print verbose information or not.
   -b, --back            Whether back the old folder? default value: False.
 ```
-
-* the **init** stage used to generate the deformed structures. 
 
 To obtain the deformed structures according to different symmetry, a relaxed structure if needed. Suppose you have a POSCAR file in current folder, using the following command to generate the deformed structures by stress fitting approach:
 ```bash
@@ -132,6 +132,29 @@ if the `-m` parameter exist, it means the Lagrangian stress equals  [-max,+max]
 > tips:  .vasp .xsf .cif format files are all supported
 
 * the **run** stage used to conduct the DFT calculation. 
+
+use subcomand to show the help information
+```
+m2d run -h
+```
+it shows 
+```
+usage: m2d run [-h] [-s {stress,energy}] [-p {elc,ssc}] [-v] input
+
+positional arguments:
+  input                 input file for supplying information about DFT
+                        calculation, json/yaml format. The 'machine', 'tasks',
+                        'code', 'resources' should be supplied.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s {stress,energy}, --strategy {stress,energy}
+                        Support 'Energy' or 'Stress' strategy.
+  -p {elc,ssc}, --properties {elc,ssc}
+                        What do you want to calcuation? elastic constant or
+                        stress strain curve? default value: 'elc'.
+  -v, --verbose         print verbose information or not.
+```
 
 For this stage, the running command is :
 
@@ -209,6 +232,29 @@ code:
 
 
 * the **post** stage used analysis the result and plot the result. 
+
+use subcomand to show the help information
+```
+m2d post -h
+```
+it shows 
+```
+usage: m2d post [-h] [-a {stress,energy}] [-p {elc,ssc}] [--skip] [-o ORDER] [--plot] [-v]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -a {stress,energy}, --approach {stress,energy}
+                        Support 'Energy' or 'Stress' approach.
+  -p {elc,ssc}, --properties {elc,ssc}
+                        What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.
+  --skip                Whether skip the data parsing ? if true, it means the Def_*_Energy.dat should be exists in
+                        corresponding folder. default value: False.
+  -o ORDER, --order ORDER
+                        The order of polynomial for fitting. Default value: 4 for strain-stress approach and 3 for stress-
+                        strain approach
+  --plot                plot the figures
+  -v, --verbose         print verbose information or not.
+```
 
 For this stage, the running command is :
 
