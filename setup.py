@@ -31,7 +31,8 @@ setuptools.setup(
     url="https://gitee.com/haidi-hfut/mech2d",
     python_requires="~=3.6",
     packages=['mech2d', 
-              'mech2d/calculation'
+              'mech2d/calculation',
+              'mech2d/scripts'
     ],
     classifiers=[
         "Programming Language :: Python :: 3.6",
@@ -41,7 +42,8 @@ setuptools.setup(
     install_requires=install_requires,    
         entry_points={
           'console_scripts': [
-              SHORT_CMD+'= mech2d.main:main']
+              SHORT_CMD+'= mech2d.main:main',
+              'cvasp= mech2d.scripts.cvasp:main']
    }
 )
 
