@@ -1,0 +1,61 @@
+---
+# remeber to rename the current file to "input.yaml"
+machine:
+  batch_type: Slurm
+  context_type: LocalContext
+  local_root: "./work"
+  remote_root: "./work"
+  remote_profile:
+    hostname: localhost
+    username: wang
+    port: 22
+    timeout: 10
+resources:
+  number_node: 1
+  cpu_per_node: 48
+  gpu_per_node: 0
+  queue_name: batch
+  task_max: 10
+  group_size: 1
+  custom_flags: 
+   - "ulimit -s unlimited"
+  module_list: 
+   - "vasp/5.4.1"
+  
+  #source_list:
+  # - "/opt/intel/parallel_studio_xe_2020.2.108/psxevars.sh intel64"
+  #envs:
+  #  PATH: "/opt/soft/vasp541:$PATH"
+tasks:
+  # make sure that you have install the custodian : pip install custodian
+  command: 'cvasp "mpirun -np 48 vasp_std" 3'
+  task_work_path:
+  forward_files:
+  - INCAR
+  - KPOINTS
+  - POTCAR
+  - POSCAR
+  backward_files:
+  - vasp.out.relax
+  - vasp.out
+  - std_err.txt
+  - runlog
+  - errlog
+  - OUTCAR
+  - OSZICAR
+  - vasprun.xml
+  - CONTCAR
+  outlog: runlog
+  errlog: errlog
+code:
+  name: vasp
+  input:
+    INCAR: "./INCAR"
+    #KPOINTS: "./KPOINTS"    # it means that you set up the KPOINTS file manually
+    KPOINTS:
+      # if this value less than 1, then it generates KPOINTS by using the VASP method
+      # or it will use the Pymatgen method 
+      kspacing: 5000  
+      kgamma: false
+    POTCAR: "./POTCAR"
+    #vdw_kernel: vdw_kernel.bindat
