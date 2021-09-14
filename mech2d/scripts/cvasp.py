@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os
-import sys
-import argparse
+import os,sys,argparse
 import numpy as np
 from pymatgen.io.vasp import Kpoints
 from custodian.vasp.jobs import VaspJob
@@ -17,7 +15,7 @@ handlers=[VaspErrorHandler(),FrozenJobErrorHandler(),StdErrHandler(),NonConvergi
 validators=[VaspFilesValidator(),VasprunXMLValidator()]
 
 def relaxation_static_run(vasp_cmd,half_kpts_first_relax=False,auto_npar=True,backup=False,auto_continue=False):
-    incar_update = {"ISTART": 1,"NSW":0}
+    incar_update = {"ISTART": 1,"NSW":0, "LVHAR":False}
     settings_overide_1 = None
     settings_overide_2 = [
         {"dict": "INCAR", "action": {"_set": incar_update}},
@@ -45,15 +43,16 @@ def relaxation_static_run(vasp_cmd,half_kpts_first_relax=False,auto_npar=True,ba
             VaspJob(
                 vasp_cmd,
                 final=True,
-                backup=backup,
+                backup=True,
                 suffix="",
+                #suffix=".static",
                 auto_npar=auto_npar,
                 auto_continue=auto_continue,
                 settings_override=settings_overide_2,
             ),
         ]
 
-def runvasp(cmd,max_errors=3,half_kpts_first_relax=False,auto_npar=True):
+def runvasp(cmd,max_errors=3,half_kpts_first_relax=True,auto_npar=True):
   
     """
     cmd example:
@@ -79,9 +78,9 @@ def main():
     runvasp(cmd=cmd,max_errors=max_errors)
 
 if __name__=='__main__':
-  main()
-  # vasp="/sharedext4/vasp/vasp.5.4.4/bin/vasp_std"
-  # ncpu="48"
-  # fcmd="/opt/soft/vasp541/vasp_fix_z_intel2015"
-  # max_errors=3
-  # runvasp(cmd=['mpirun', '-np', ncpu, fcmd],max_errors=max_errors)
+   main()
+   #vasp="/sharedext4/vasp/vasp.5.4.4/bin/vasp_std"
+   #ncpu="48"
+   #fcmd="/opt/soft/vasp541/vasp_fix_z_intel2015"
+   #max_errors=3
+   #runvasp(cmd=['mpirun', '-np', ncpu, fcmd],max_errors=max_errors)
