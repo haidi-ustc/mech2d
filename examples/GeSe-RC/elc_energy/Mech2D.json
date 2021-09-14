@@ -1,0 +1,167 @@
+{
+    "@module": "mech2d.mechanics",
+    "@class": "Elastic",
+    "structure": {
+        "@module": "pymatgen.core.structure",
+        "@class": "Structure",
+        "charge": null,
+        "lattice": {
+            "matrix": [
+                [
+                    4.906077,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    5.571202,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    18.079291
+                ]
+            ],
+            "a": 4.906077,
+            "b": 5.571202,
+            "c": 18.079291,
+            "alpha": 90.0,
+            "beta": 90.0,
+            "gamma": 90.0,
+            "volume": 494.1566686646262
+        },
+        "sites": [
+            {
+                "species": [
+                    {
+                        "element": "Ge",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "xyz": [
+                    2.4530385,
+                    2.785601,
+                    9.0396455
+                ],
+                "label": "Ge",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "Ge",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.0,
+                    -0.0,
+                    0.5
+                ],
+                "xyz": [
+                    0.0,
+                    0.0,
+                    9.0396455
+                ],
+                "label": "Ge",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "Se",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.25,
+                    0.25,
+                    0.415026
+                ],
+                "xyz": [
+                    1.22651925,
+                    1.3928005,
+                    7.503375826566001
+                ],
+                "label": "Se",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "Se",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.75,
+                    0.75,
+                    0.415026
+                ],
+                "xyz": [
+                    3.67955775,
+                    4.1784015000000005,
+                    7.503375826566001
+                ],
+                "label": "Se",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "Se",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.75,
+                    0.25,
+                    0.584974
+                ],
+                "xyz": [
+                    3.67955775,
+                    1.3928005,
+                    10.575915173434
+                ],
+                "label": "Se",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "Se",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.25,
+                    0.75,
+                    0.584974
+                ],
+                "xyz": [
+                    1.22651925,
+                    4.1784015000000005,
+                    10.575915173434
+                ],
+                "label": "Se",
+                "properties": {}
+            }
+        ],
+        "@version": null
+    },
+    "approach": "energy",
+    "properties": "elc",
+    "lattice": "CR",
+    "SOEC": 4,
+    "verbose": false,
+    "workdir": "/home/wang/dev/mech2d/examples/GeSe-RC/elc_energy",
+    "numb_points": 9,
+    "max_lag_strain": 0.02,
+    "V0": 494.1566686646264
+}
