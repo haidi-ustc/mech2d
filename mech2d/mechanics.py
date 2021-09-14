@@ -436,7 +436,7 @@ class Elastic(MSONable):
            raise RuntimeError('ERROR: Unkonwn approach! The supported are "energy" or "stress"')
 
         # unit convert 
-        ana = Analysis(self.structure,C)
+        ana = Analysis(self.structure,C,plot=plot,approach=self.approach)
         ana.summary()
 
 #--------------------------------------------------------------------------------------------------

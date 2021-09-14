@@ -122,12 +122,13 @@ class Plot(object):
         plt.savefig(fname,format='jpg',dpi=300)
         #plt.show()
 
-    def polar_plot_YV(self,font_dict={},figsize=(8,6),skip=[1,1,1]):
+    def polar_plot_EV(self,font_dict={},figsize=(8,6),skip=[1,1,1],fname='EV.jpg'):
          
         self._set_fig(font_dict=font_dict,figsize=figsize)
         ax=self.fig.add_subplot(121, projection='polar')# ,facecolor="lightgoldenrodyellow")
-        theta= f[0::skip[0],0]
-        Y=f[0::skip[0],1]
+          
+        theta= self._data[0::skip[0],0]
+        Y=self._data[0::skip[0],1]
         ax.plot(theta, Y, color="tab:orange", lw=1, ls="--", marker='h',alpha=0.6, label="$E$")
         ax.set_rlabel_position(10)  # get radial labels away from plotted line
         ax.tick_params(grid_color="palegoldenrod")
@@ -136,8 +137,9 @@ class Plot(object):
         
         ax1=self.fig.add_subplot(122, projection='polar') #,facecolor="lightgoldenrodyellow")
         ax1.tick_params(grid_color="palegoldenrod")
-        V=f[:,2]
-        T=f[:,0]
+
+        V=self._data[:,2]
+        T=self._data[:,0]
         Vp_idx=np.where(V>0)
         Vn_idx=np.where(V<0)
         
@@ -157,10 +159,9 @@ class Plot(object):
         #ax1.set_rticks([0.3, 0.60, 0.9])  # less radial ticks
         #ax.set_rticks([30,60,90])  # less radial ticks
         ax.text(-0.25, 1.1, '('+string.ascii_lowercase[0]+')', transform=ax.transAxes,size=20, weight='bold')
-        if len(Vn)>0:
-           ax1.text(-0.25, 1.1, '('+string.ascii_lowercase[1]+')', transform=ax1.transAxes,size=20, weight='bold')
+        ax1.text(-0.25, 1.1, '('+string.ascii_lowercase[1]+')', transform=ax1.transAxes,size=20, weight='bold')
         plt.tight_layout()
-        plt.savefig('YV.jpg',format='jpg',dpi=300)
+        plt.savefig(fname,format='jpg',dpi=300)
         
         #plt.show()
 

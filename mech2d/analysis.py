@@ -13,16 +13,21 @@
 #    along with mech2d.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy as np
+from numpy import sin,cos,pi
 from mech2d.constants import Len
 from mech2d.utils import prettyprint,sepline,box_center
 from mech2d.bravais import Bravais2D
+from mech2d.plot import Plot
 from pymatgen.core import Structure
 
 class Analysis(object):
 
-    def __init__(self, structure, elastic_tensor):
+    def __init__(self, structure, elastic_tensor,plot=False,approach=None):
+
         self.C2d = elastic_tensor
         self.structure = structure 
+        self.plot = plot
+        self.approach=approach if approach else ''
 
     def get_brav_lattice(self):
         return Bravais2D(self.structure)
@@ -106,7 +111,7 @@ class Analysis(object):
     def references(self):
         box_center(ch="References",fill='-',sp='-')
         refs = "Phys. Rev. B 85, 125428 (2012)\n"
-        refs+= "Acta Mechanica 223 (2012), 2591-2596\n"    
+        refs+= "Acta Mechanica 223, 2591-2596 (2012)\n"
         refs+= "Comput. Mater. Sci. 68, 320 (2013)\n"
         refs+= "Mech. Mater. 64, 135 (2013)\n"
         refs+= "2D Mater. 6, 048001 (2019)"
@@ -115,18 +120,22 @@ class Analysis(object):
     def summary(self):
         box_center(ch="Elastic properties summary",fill='-',sp='-')
         print('')
-        box_center(ch="Elastic Tensor of %s system (N/m)"%(self.structure.formula.replace(" ","")),fill='-',sp='-')
+        box_center(ch="Stiffness Tensor of %s system (N/m)"%(self.structure.formula.replace(" ","")),fill='-',sp='-')
         prettyprint(self.C2d)
         tmp=np.zeros((6,6))
         tmp[2,2]=100
         tmp[3,3]=100
         tmp[4,4]=100
         self.S2d = np.linalg.inv(self.C2d+tmp)
-        box_center(ch="Stiffness Maxtrix",fill='-',sp='-')
-        self.S2d[2,2]=0
-        self.S2d[3,3]=0
-        self.S2d[4,4]=0
-        prettyprint(self.S2d,precision=5)
+        if self.get_stability()=='Stable':
+           box_center(ch="Compliance Tensor (m/N)",fill='-',sp='-')
+           self.S2d[2,2]=0
+           self.S2d[3,3]=0
+           self.S2d[4,4]=0
+           prettyprint(self.S2d,precision=5)
+           sepline()
+           print('Writing orientation-dependent E and v ...')
+           self.get_EV()
         sepline()
         print("2D layer modulus (N/m)         :   %10.3f " % self.get_gamma())
         print("2D Young's modulus Y[10] (N/m) :   %10.3f " % self.get_Y10())
@@ -135,7 +144,61 @@ class Analysis(object):
         print("2D Poisson ratio v[10]         :   %10.3f " % self.get_nu10())
         print("2D Poisson ratio v[01]         :   %10.3f " % self.get_nu01())
         print("Stability                      :   %10s   " % self.get_stability())
+        self.references()
         box_center(ch='-',fill='-',sp='-')
+
+    @property
+    def v_zz(self):
+        """
+        return vzz=C12/C22
+        """
+        return self.C2d[0][1]/self.C2d[1][1]
+
+    @property
+    def d1(self):
+        """
+        return d1=C11/C22+1-(C11*C22-C12**2)/C22/C66;
+        """
+        return self.C2d[0][0]/self.C2d[1][1]+1 - \
+               (self.C2d[0][0]*self.C2d[1][1]-self.C2d[0][1]**2)/ \
+               self.C2d[1][1]/self.C2d[5][5]
+
+    @property
+    def d2(self):
+        """
+        return d2=-(2*C12/C22-(C11*C22-C12**2)/C22/C66);
+        """
+        return -1*(2*self.C2d[0][1]/self.C2d[1][1]-\
+                (self.C2d[0][0]*self.C2d[1][1]-self.C2d[0][1]**2)/ \
+                 self.C2d[1][1]/self.C2d[5][5])
+
+    @property
+    def d3(self):
+        """
+        return d3 =C11/C22
+        """
+        return self.C2d[0][0]/self.C2d[1][1]
+
+    @property
+    def Y_zz(self):
+        """
+        return Y_zz = C11*C22-C12**2)/C22
+        """
+        return (self.C2d[0][0]*self.C2d[1][1]-self.C2d[0][1]**2)/self.C2d[1][1]
+
+    def get_EV(self,npoints=360,fname='EV_theta.dat'):
+        theta=np.linspace(0,2*pi,360)
+        E=self.Y_zz/((cos(theta))**4+self.d2*(cos(theta))**2.*(sin(theta))**2+self.d3*(sin(theta))**4)
+        V=(self.v_zz*(cos(theta))**4-self.d1*(cos(theta))**2.*(sin(theta))**2+self.v_zz*(sin(theta))**4)/ \
+          ((cos(theta))**4+self.d2*(cos(theta))**2.*(sin(theta))**2+self.d3*(sin(theta))**4);
+        res=np.vstack((theta,E,V)).T
+        np.savetxt(fname,res,fmt='%10.6f %10.6f %10.6f')
+        if self.plot:
+           try:
+              _plot=Plot(data=fname)
+              _plot.polar_plot_EV(fname=self.approach+'-EV.jpg')
+           except:
+              print('WARNING: Plot failed, skip !!!')
 
 if __name__=='__main__':
    st=Structure.from_file('POSCAR')
