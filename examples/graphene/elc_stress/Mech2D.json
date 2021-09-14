@@ -1,0 +1,87 @@
+{
+    "@module": "mech2d.mechanics",
+    "@class": "Elastic",
+    "structure": {
+        "@module": "pymatgen.core.structure",
+        "@class": "Structure",
+        "charge": null,
+        "lattice": {
+            "matrix": [
+                [
+                    2.4680119730716292,
+                    0.0,
+                    0.0
+                ],
+                [
+                    -1.2340059865358146,
+                    2.137360567387299,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    15.0
+                ]
+            ],
+            "a": 2.4680119730716292,
+            "b": 2.4680115416724426,
+            "c": 15.0,
+            "alpha": 90.0,
+            "beta": 90.0,
+            "gamma": 120.0000057822139,
+            "volume": 79.12547206624538
+        },
+        "sites": [
+            {
+                "species": [
+                    {
+                        "element": "C",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.0,
+                    0.0,
+                    0.5
+                ],
+                "xyz": [
+                    0.0,
+                    0.0,
+                    7.5
+                ],
+                "label": "C",
+                "properties": {}
+            },
+            {
+                "species": [
+                    {
+                        "element": "C",
+                        "occu": 1
+                    }
+                ],
+                "abc": [
+                    0.3333330000000032,
+                    0.6666669999999968,
+                    0.5
+                ],
+                "xyz": [
+                    -1.2340059746349073e-06,
+                    1.4249077573783817,
+                    7.5
+                ],
+                "label": "C",
+                "properties": {}
+            }
+        ],
+        "@version": null
+    },
+    "approach": "stress",
+    "properties": "elc",
+    "lattice": "H",
+    "SOEC": 2,
+    "verbose": false,
+    "workdir": "/home/wang/dev/mech2d/test/graphene/pbe/elc_stress",
+    "numb_points": 9,
+    "max_lag_strain": 0.015,
+    "V0": 79.12547206624541
+}
