@@ -17,7 +17,11 @@ today = datetime.date.today().strftime("%b-%d-%Y")
 with open(path.join('mech2d', '_date.py'), 'w') as fp :
     fp.write('date = \'%s\'' % today)
 
-install_requires=['dpdispatcher==0.3.39','pymatgen==2022.0.14','custodian==2021.2.8'] 
+install_requires=['pymatgen==2022.0.14',
+                  'dpdispatcher==0.3.39',
+                  'custodian==2021.2.8',
+                  'recommonmark',
+                  'numpydoc'] 
 
 setuptools.setup(
     name=NAME,
