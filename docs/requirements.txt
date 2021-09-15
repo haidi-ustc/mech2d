@@ -1,3 +1,6 @@
 numpydoc
 recommonmark
 numpy==1.21.2
+pymatgen==2022.0.14
+dpdispatcher==0.3.39
+custodian==2021.2.8
