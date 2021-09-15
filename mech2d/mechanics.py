@@ -79,7 +79,12 @@ class Elastic(MSONable):
         """
         Create an Elastic obj. from structure with given condition
         Args: 
-            structure: input structure file name or Pymatgen Structure obj
+            structure : Input structure file name or Pymatgen Structure obj.
+            approach (str): Two approaches are avaliable for elastic constant calculation, 'stress' or 'energy'  
+            properties (str): What kind of properties do you want to calculate ? elastic constant or  stress-strain curve, supported
+                        values are : 'elc' or 'ssc'
+            workdir (str): The working directory, default is None
+            verbose (bool): Output the verbose information for debug
         """
         if isinstance(structure,str) and os.path.isfile(structure):
            self._struct = Structure.from_file(structure)
@@ -118,6 +123,9 @@ class Elastic(MSONable):
 
     @property
     def verbose(self):
+        """
+        Verbose information
+        """
         return self._verbose
 
     @verbose.setter
@@ -126,16 +134,22 @@ class Elastic(MSONable):
 
     @property
     def properties(self):
+        """
+        Property for calculation
+        """
         return self._properties
       
     @property
     def approach(self):
+        """
+        Approach for calculation
+        """
         return self._approach
 
     @property
     def structure(self):
         """
-        get the structure obj.
+        Structure object 
         """
         return self._struct
 
@@ -144,6 +158,9 @@ class Elastic(MSONable):
     
     @property
     def lattice_type(self):
+        """
+        Two dimensional lattice type
+        """
         brav = self.get_brav_lattice()
         if brav.lattice_type == "Oblique":
            return 'O'
@@ -160,6 +177,9 @@ class Elastic(MSONable):
 
     @property
     def C_mult_eta_Matrix(self):
+        """
+        The relation between lagrangian stress and strain : tao=C*yeta
+        """
         if self.lattice_type == 'O':
            #'c11 c12 c22 C16 C26 c66'
            return np.mat(
@@ -202,6 +222,9 @@ class Elastic(MSONable):
            raise RuntimeError('ERROR: Unknown 2D bravais lattice')
     @property
     def number_elastic_tensor(self):
+        """
+        number of the independent elastic tensor 
+        """
         if self.lattice_type == 'O':
            return 6
         elif self.lattice_type == 'CR' or self.lattice_type == 'R':
@@ -215,6 +238,9 @@ class Elastic(MSONable):
 
     @property
     def lagrangian_strain_list(self):
+        """
+        lagrangian strain list
+        """
        if  self.approach == 'energy':
 
            if self.lattice_type == 'O':
@@ -248,9 +274,6 @@ class Elastic(MSONable):
         """
         Json-serialization dict representation of the Elastic.
 
-        Args:
-            verbose (bool): Verbosity level. Default of False only includes the
-                matrix representation. Set to 1 for more details.
         """
         d = {
             "@module": self.__class__.__module__,
@@ -267,10 +290,32 @@ class Elastic(MSONable):
    
     @classmethod
     def from_dict(cls, d):
+        """
+        Reconstitute a Molecule object from a dict representation created using
+        as_dict().
+
+        Args:
+            d (dict): dict representation of Elastic
+
+        Returns:
+            Elastic object
+        """
         return cls(d['structure'],approach=d['approach'], properties=d['properties'],
                    workdir=d['workdir'], verbose = d['verbose'])
 
     def to(self,filename,option={},fmt=None,indent=4):
+        """
+        Outputs the Elastic to a file.
+
+        Args:
+            fmt (str): Format to output to. Defaults to JSON unless filename
+                is provided. 
+            filename (str): Output filename
+            option (dict): The optional parameters in dict will be append to Elastic.as_dict()
+            indent (int): Used for format output
+        Returns:
+            None
+        """
         d=self.as_dict()
         d.update(option) 
         if fmt and filename.endswith(fmt):
@@ -278,6 +323,14 @@ class Elastic(MSONable):
         dumpfn(d,filename,indent=indent) 
    
     def calc_stress_strain(self,skip=False,finput='input.yaml',plot=False):
+        """
+        Calculate the stress train curve.
+        Args:
+            skip (str): skip the data parsing by Mech2d parser
+            finput (str): input file name for basic parameter about machine, task, resources, and code
+            plot (bool): whether plot the figure, default is False
+        """
+
 
         if self.approach=="energy":
            raise RuntimeError("ERROR: Stress Strain curve calculation only support stress approach")
@@ -375,6 +428,14 @@ class Elastic(MSONable):
                 
 #--------------------------------------------------------------------------------------------------
     def calc_elastic_constant(self,poly_order=4,skip=False,finput='input.yaml',plot=False):
+        """
+        Calculate the elstic constant using the different approach.
+        Args:
+            poly_order (int): the order of polynomial for fitting
+            skip (str): skip the data parsing by Mech2d parser
+            finput (str): input file name for basic parameter about machine, task, resources, and code
+            plot (bool): whether plot the figure, default is False
+        """
         if self.approach == 'energy':
            if isinstance(poly_order,int):
               poly_order=[poly_order]*len(self.lagrangian_strain_list)
@@ -441,6 +502,9 @@ class Elastic(MSONable):
 
 #--------------------------------------------------------------------------------------------------
     def calc_elastic_constant_from_stress(self,poly_order,skip,numb_points,max_lag_strain,workdir,code,plot):
+        """
+        Calculate the elstic constant based on stress-strain approach.
+        """
         for i in range(1,len(self.lagrangian_strain_list)+1):
             Ls_list= Ls_Dic[self.lagrangian_strain_list[i-1]]
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
@@ -595,6 +659,9 @@ class Elastic(MSONable):
 
 #--------------------------------------------------------------------------------------------------
     def calc_elastic_constant_from_energy(self,poly_order,skip,numb_points,max_lag_strain,workdir,code,plot):
+        """
+        Calculate the elstic constant based on energy-strain approach.
+        """
 
         for i in range(1,self.number_elastic_tensor+1):
             Defn  = os.path.join(workdir,'Def_'+def_fmt1%i)
@@ -695,6 +762,13 @@ class Elastic(MSONable):
 #--------------------------------------------------------------------------------------------------
     @staticmethod
     def _get_eps_matrix(Lv):
+        """
+        Calculate the physical strain according to the Lagrangian strain based on iteration method.
+        Args:
+           Lv (array): Lagrangian strain array
+        Returns:
+           (array): physical strain array
+        """
         # eps= eta - 0.5 * eps  , this matrix equation can be solved by iteration method
         eta_matrix      = np.zeros((3,3))
         eta_matrix[0,0] = Lv[0]
@@ -720,6 +794,15 @@ class Elastic(MSONable):
 
 #--------------------------------------------------------------------------------------------------
     def set_deformed_structure_for_ss(self,numb_points,max_lag_strain=None,lag_strain_range=None,direction=['xx'],back=True):
+        """
+        set the deformed structure for stress-strain curve calculation
+        Args:
+           numb_points (int): Number of deformed structures
+           max_lag_strain (float): The maximum Lagrangian strain, the range will be set to [-max_lag_strain,+max_lag_strain]
+           lag_strain_range (array): Set the Lagrangian strain manually
+           direction (list): Which direction to calculate the stress-strain curve
+           back (bool) : back the old folder. Default True 
+        """
 
         if (numb_points < 2):
            raise RuntimeError('ERROR: Too few deformed structure, increase numb_points')
@@ -841,6 +924,13 @@ class Elastic(MSONable):
                            "direction":direction,"V0":V0})
 
     def set_deformed_structure_for_elc(self,numb_points,max_lag_strain,back=True):
+        """
+        set the deformed structure for elastic constant calculation by using 'stress' or 'energy' approach
+        Args:
+           numb_points (int): Number of deformed structures
+           max_lag_strain (float): The maximum Lagrangian strain, the range will be set to [-max_lag_strain,+max_lag_strain]
+           back (bool) : back the old folder. Default True 
+        """
 
         if (numb_points < 5):
            raise RuntimeError('ERROR: Too few deformed structure, increase numb_points')
@@ -951,6 +1041,9 @@ class Elastic(MSONable):
 
 #--------------------------------------------------------------------------------------------------
 def post_elastic(args):
+    '''
+    post process function entry point
+    '''
     logo()
     skip=args.skip
     order=args.order
@@ -977,6 +1070,9 @@ def post_elastic(args):
 
 #--------------------------------------------------------------------------------------------------
 def init_elastic(args):
+    '''
+    init process function entry point
+    '''
     logo()
     structure=args.config
     approach=args.approach
