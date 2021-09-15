@@ -26,7 +26,7 @@ def main():
     formatter_class=argparse.RawDescriptionHelpFormatter,
     description="""Desctiption:\n------------
 mech2d is a convenient script that use to calculate the mechanical properties of
-2D materials, including EOS, Stress-Strain Curve, elastic constants and revalant
+2D materials, including Stress-Strain Curve, elastic constants and revalant
 properties. The script works based on several sub-commands with their own options.
 To see the options for the sub-commands, type "m2d sub-command -h".""")
     parser.add_argument('-v', '--version', action='version', version=get_version(),help='Display version')
