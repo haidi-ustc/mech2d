@@ -24,18 +24,30 @@ debug=False
 class Plot(object):
 
     def __init__(self,data='result.json'):
+        """
+        Create an Plot obj. based on data
+
+        Args: 
+            data : Input data , should be a list or filename
+        """
         if data=='result.json':
            self._data=self.load_result()      
         else:
            self._data=self.load_data(data)
 
     def load_result(self):
+        """
+        load json format data
+        """
         with open('result.json','r') as f:
              d=json.loads(f.read())
         self.YV=d['YV']
         self.SS=d['SS']
         
     def load_data(self,data):
+        """
+        load json txt data or convert list to np.array
+        """
         if os.path.isfile(data):
            return np.loadtxt(data)
         if isinstance(data,list):
@@ -51,6 +63,17 @@ class Plot(object):
         self.fig = plt.figure(figsize=figsize) # width , heighth
     
     def energy_strain_plot(self,font_dict={},figsize=(8,6),order=4,fname='Energy_Strain.jpg'):
+        """
+        plot energy strain figure 
+
+        Args:
+            font_dict (dict):   dict parameter for figure plot
+            figsize (tuple):   dicide the figure size
+            order (int):      fitting order for polynomial 
+            fname (str):      output filename for figure
+        Returns:
+            None
+        """
  
         self._set_fig(font_dict=font_dict,figsize=figsize)
         ax=self.fig.add_subplot(111)
@@ -73,6 +96,17 @@ class Plot(object):
         #plt.show()
  
     def stress_strain_plot_nonefit(self,font_dict={},figsize=(16,16),fname='LStress_Strain.jpg'):
+        """
+        plot stress strain figure without fitting (for stress-strain curve calculation)
+
+        Args:
+            font_dict (dict):   dict parameter for figure plot
+            figsize (tuple):   dicide the figure size
+            order (int):      fitting order for polynomial 
+            fname (str):      output filename for figure
+        Returns:
+            None
+        """
         self._set_fig(font_dict=font_dict,figsize=figsize)
         if debug:
            prettyprint(self._data)
@@ -98,6 +132,18 @@ class Plot(object):
         plt.savefig(fname,format='jpg',dpi=300)
 
     def stress_strain_plot(self,font_dict={},figsize=(18,6),order=[3,3,3],fname='LStress_Strain.jpg'):
+        """
+        plot energy strain figure 
+
+        Args:
+            font_dict (dict):   dict parameter for figure plot
+            figsize (tuple):   dicide the figure size
+            order (int):      fitting order for polynomial 
+            fname (str):      output filename for figure
+        Returns:
+            None
+        """
+
         self._set_fig(font_dict=font_dict,figsize=figsize)
         if debug:
            prettyprint(self._data)
@@ -123,6 +169,17 @@ class Plot(object):
         #plt.show()
 
     def polar_plot_EV(self,font_dict={},figsize=(8,6),skip=[1,1,1],fname='EV.jpg'):
+        """
+        plot the orientation dependent Young's Modulus and Poission's Ratio
+
+        Args:
+            font_dict (dict):   dict parameter for figure plot
+            figsize (tuple):   dicide the figure size
+            order (int):      fitting order for polynomial 
+            fname (str):      output filename for figure
+        Returns:
+            None
+        """
          
         self._set_fig(font_dict=font_dict,figsize=figsize)
         ax=self.fig.add_subplot(121, projection='polar')# ,facecolor="lightgoldenrodyellow")

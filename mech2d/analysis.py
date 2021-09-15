@@ -21,7 +21,9 @@ from mech2d.plot import Plot
 from pymatgen.core import Structure
 
 class Analysis(object):
-
+    """
+     A module to analysis the Young's modulus , Poisson's ratio and Shear modulus
+    """
     def __init__(self, structure, elastic_tensor,plot=False,approach=None):
 
         self.C2d = elastic_tensor
@@ -81,6 +83,11 @@ class Analysis(object):
     def get_G2d(self):
         """
         2D shear modulus; G2d = C66
+
+        Args:
+            None
+        Returns:
+            shear modulus 
         """
         return self.C2d[5][5]
 

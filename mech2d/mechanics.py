@@ -304,18 +304,19 @@ class Elastic(MSONable):
                    workdir=d['workdir'], verbose = d['verbose'])
 
     def to(self,filename,option={},fmt=None,indent=4):
+
         """
         Outputs the Elastic to a file.
 
         Args:
-            fmt (str): Format to output to. Defaults to JSON unless filename
-                is provided. 
+            fmt (str): Format to output to. Defaults to JSON
             filename (str): Output filename
             option (dict): The optional parameters in dict will be append to Elastic.as_dict()
             indent (int): Used for format output
         Returns:
             None
         """
+
         d=self.as_dict()
         d.update(option) 
         if fmt and filename.endswith(fmt):
@@ -325,6 +326,7 @@ class Elastic(MSONable):
     def calc_stress_strain(self,skip=False,finput='input.yaml',plot=False):
         """
         Calculate the stress train curve.
+
         Args:
             skip (str): skip the data parsing by Mech2d parser
             finput (str): input file name for basic parameter about machine, task, resources, and code
@@ -428,14 +430,17 @@ class Elastic(MSONable):
                 
 #--------------------------------------------------------------------------------------------------
     def calc_elastic_constant(self,poly_order=4,skip=False,finput='input.yaml',plot=False):
+
         """
         Calculate the elstic constant using the different approach.
+
         Args:
             poly_order (int): the order of polynomial for fitting
             skip (str): skip the data parsing by Mech2d parser
             finput (str): input file name for basic parameter about machine, task, resources, and code
             plot (bool): whether plot the figure, default is False
         """
+
         if self.approach == 'energy':
            if isinstance(poly_order,int):
               poly_order=[poly_order]*len(self.lagrangian_strain_list)
@@ -764,6 +769,7 @@ class Elastic(MSONable):
     def _get_eps_matrix(Lv):
         """
         Calculate the physical strain according to the Lagrangian strain based on iteration method.
+
         Args:
            Lv (array): Lagrangian strain array
         Returns:
@@ -794,14 +800,18 @@ class Elastic(MSONable):
 
 #--------------------------------------------------------------------------------------------------
     def set_deformed_structure_for_ss(self,numb_points,max_lag_strain=None,lag_strain_range=None,direction=['xx'],back=True):
+
         """
         set the deformed structure for stress-strain curve calculation
+
         Args:
-           numb_points (int): Number of deformed structures
-           max_lag_strain (float): The maximum Lagrangian strain, the range will be set to [-max_lag_strain,+max_lag_strain]
-           lag_strain_range (array): Set the Lagrangian strain manually
-           direction (list): Which direction to calculate the stress-strain curve
-           back (bool) : back the old folder. Default True 
+            numb_points (int): Number of deformed structures
+            max_lag_strain (float): The maximum Lagrangian strain, the range will be set to [-max_lag_strain,+max_lag_strain]
+            lag_strain_range (array): Set the Lagrangian strain manually
+            direction (list): Which direction to calculate the stress-strain curve
+            back (bool) : back the old folder. Default True 
+        Returns:
+            None
         """
 
         if (numb_points < 2):
@@ -926,10 +936,11 @@ class Elastic(MSONable):
     def set_deformed_structure_for_elc(self,numb_points,max_lag_strain,back=True):
         """
         set the deformed structure for elastic constant calculation by using 'stress' or 'energy' approach
+
         Args:
-           numb_points (int): Number of deformed structures
-           max_lag_strain (float): The maximum Lagrangian strain, the range will be set to [-max_lag_strain,+max_lag_strain]
-           back (bool) : back the old folder. Default True 
+            numb_points (int): Number of deformed structures
+            max_lag_strain (float): The maximum Lagrangian strain, the range will be set to [-max_lag_strain,+max_lag_strain]
+            back (bool) : back the old folder. Default True 
         """
 
         if (numb_points < 5):

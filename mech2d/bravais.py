@@ -14,13 +14,14 @@
 
 import math
 import numpy as np
-#import matplotlib.pyplot as plt
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 
 class Bravais2D:
-    """ Plots a 2D Bravais lattice.
-    Instance Attributes:
+    """ 
+    2D bravais lattice obj to check the lattice type
+ 
+    Args
         a: (float) The magnitude of the first primitive vector (default is 1.0).
         b: (float) The magnitude of the second primitive vector (default is 1.0).
         angle: (float) The angle between the two primitive vectors; can't be 0 or 180 degrees (default is 120.0).
@@ -133,6 +134,7 @@ class Bravais2D:
         return (x[0], x[1], x[1+root], x[root], x[0]), (y[0], y[1], y[1+root], y[root], y[0])
 
     def plot(self):
+        import matplotlib.pyplot as plt
         """ Creates a 2D scatter plot. """
 
         x, y = self.__find_points()
