@@ -238,9 +238,9 @@ class Elastic(MSONable):
 
     @property
     def lagrangian_strain_list(self):
-        """
-        lagrangian strain list
-        """
+       """
+       lagrangian strain list
+       """
        if  self.approach == 'energy':
 
            if self.lattice_type == 'O':
