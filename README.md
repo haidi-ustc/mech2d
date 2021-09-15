@@ -263,7 +263,7 @@ m2d post -a stress --plot
 ```
 A figure named stress-EV.jpg will be generated.
 
-![EV](http://note.youdao.com/noteshare?id=eebde950bb2defb3f61c1ec285a50b2f&sub=A22D69ECC94C45138EBBB385DC4AAB95)
+![EV](https://note.youdao.com/yws/api/personal/file/A22D69ECC94C45138EBBB385DC4AAB95?method=download&shareKey=eebde950bb2defb3f61c1ec285a50b2f)
 
 or for stress-strain calculation 
 
