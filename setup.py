@@ -19,9 +19,7 @@ with open(path.join('mech2d', '_date.py'), 'w') as fp :
 
 install_requires=['pymatgen==2022.0.14',
                   'dpdispatcher==0.3.39',
-                  'custodian==2021.2.8',
-                  'recommonmark',
-                  'numpydoc'] 
+                  'custodian==2021.2.8']
 
 setuptools.setup(
     name=NAME,
