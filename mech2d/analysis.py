@@ -18,6 +18,7 @@ from mech2d.constants import Len
 from mech2d.utils import prettyprint,sepline,box_center
 from mech2d.bravais import Bravais2D
 from mech2d.plot import Plot
+from monty.serialization import dumpfn
 from pymatgen.core import Structure
 
 class Analysis(object):
@@ -152,6 +153,10 @@ class Analysis(object):
         print("2D Poisson ratio v[01]         :   %10.3f " % self.get_nu01())
         print("Stability                      :   %10s   " % self.get_stability())
         self.references()
+        ret={"Stiffness_tensor":self.C2d.tolist(),"Compliance_tensor":self.S2d.tolist(),"Lm":self.get_gamma(),
+             "Y10":self.get_Y10(),"Y01":self.get_Y01(),"Gm":self.get_G2d(),
+             "V10":self.get_nu10(),"V01":self.get_nu01(),"Stability":self.get_stability()}
+        dumpfn(ret,"Result.json",indent=4)
         box_center(ch='-',fill='-',sp='-')
 
     @property
