@@ -37,7 +37,7 @@ class Bravais2D:
         plot: Creates a 2D scatter plot.
     """
 
-    def __init__(self, struct , eps_r=0.1, eps_a=0.1, numpoints=16):
+    def __init__(self, struct , eps_r=0.2, eps_a=1.0, numpoints=16):
         """
         :param a: (float) The magnitude of the first primitive vector (default is 1.0).
         :param b: (float) The magnitude of the second primitive vector (default is 1.0).
@@ -79,16 +79,20 @@ class Bravais2D:
     def lattice_type(self):
         #print(self.centered)
         #print(self.struct.lattice.parameters)
+        #if (abs(self.angle - 90)>  self.eps_a) and (not self.centered):
         if (abs(self.a - self.b)> self.eps_r) and (abs(self.angle - 90)>  self.eps_a) and (not self.centered):
             return "Oblique"
         elif (abs(self.a - self.b)> self.eps_r) and (abs(self.angle - 90)<=  self.eps_a) and self.centered:
             return "CenteredRectangular"
         elif (abs(self.a - self.b)> self.eps_r) and (abs(self.angle - 90)<=  self.eps_a) and (not self.centered):
             return "Rectangular"
-        elif (abs(self.a - self.b)<= self.eps_r) and ((abs(self.angle - 120)<= self.eps_a) or (abs(self.angle - 30) <= self.eps_a ) ) and (not self.centered):
+        elif (abs(self.a - self.b)<= self.eps_r) and ((abs(self.angle - 120)<= self.eps_a) or (abs(self.angle - 60) <= self.eps_a ) ) and (not self.centered):
             return "Hexagonal"
-        elif (abs(self.a - self.b)<= self.eps_r) and (abs(self.angle - 90)<=self.eps_a) and (not self.centered):
+        #elif (abs(self.a - self.b)<= self.eps_r) and (abs(self.angle - 90)<=self.eps_a) and (not self.centered):
+        elif (abs(self.a - self.b)<= self.eps_r) and (abs(self.angle - 90)<=self.eps_a) :
             return "Square"
+        elif (abs(self.angle - 90)>  self.eps_a) and (not self.centered):
+            return "Oblique"
         else:
             raise Exception("Invalid combination of a, b, angle, and/or centered.")
 
