@@ -37,6 +37,7 @@ setuptools.setup(
               'mech2d/calculation',
               'mech2d/scripts'
     ],
+    data_files = [('mech2d/scripts/', ['mech2d/scripts/submit_slurm_serial.sh', ])],
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
