@@ -215,8 +215,8 @@ class Plot(object):
         ax1.set_rlabel_position(45)  # get radial labels away from plotted line
         #ax1.set_rticks([0.3, 0.60, 0.9])  # less radial ticks
         #ax.set_rticks([30,60,90])  # less radial ticks
-        ax.text(-0.25, 1.1, '('+string.ascii_lowercase[0]+')', transform=ax.transAxes,size=20, weight='bold')
-        ax1.text(-0.25, 1.1, '('+string.ascii_lowercase[1]+')', transform=ax1.transAxes,size=20, weight='bold')
+        #ax.text(-0.25, 1.1, '('+string.ascii_lowercase[0]+')', transform=ax.transAxes,size=20, weight='bold')
+        #ax1.text(-0.25, 1.1, '('+string.ascii_lowercase[1]+')', transform=ax1.transAxes,size=20, weight='bold')
         plt.tight_layout()
         plt.savefig(fname,format='jpg',dpi=300)
         
