@@ -91,6 +91,9 @@ def run_elastic(args):
     structures=glob(os.path.join(elatic2d['workdir'],'Def_*','Def_*','Def_*vasp'))
     runtask=RunTasks(rootdir,structures,code)
     runtask.preprocess()
+    if args.manual:
+       print('Only for generating the input files')
+       os._exit(0)
     runtask.run(tasks,machine,resources)
 
 if __name__=='__main__':

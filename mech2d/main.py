@@ -57,6 +57,7 @@ To see the options for the sub-commands, type "m2d sub-command -h".""")
     parser_run.add_argument('-a','--approach', type=str, default='energy', choices=['stress', 'energy'],help="Support 'Energy' or 'Stress' approach.")
     parser_run.add_argument('-p','--properties', type=str, default='elc', choices=['elc', 'ssc'], help="What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.")
     parser_run.add_argument("input", type=str,help="input file for supplying information about DFT calculation, json/yaml format. The 'machine', 'tasks', 'code', 'resources' should be supplied.")
+    parser_run.add_argument('--manual', action="store_true", help="manual model, only for generating the input files without runing")
     parser_run.add_argument('-v','--verbose', action="store_true", help="print verbose information or not.")
     parser_run.set_defaults(func=run_elastic)
     
