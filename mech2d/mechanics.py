@@ -1067,13 +1067,20 @@ def post_elastic(args):
        pass
     else:
        elat=Elastic.from_dict(elat)
-    if elat.approach == 'stress':
-       order = 3
+    # if not set, then the value of order will be reset
+    if order==0:
+       if elat.approach == 'stress':
+          order = 3
+       else:
+          order = 4
+    else:
+       pass
     print(elat)
     if args.verbose:
        print('Default parameter for Elastic calculation post:')
        print(args)
        elat.verbose=args.verbose
+       print('order ==> %d'%order)
     plot=args.plot
 
     if properties == 'elc':
