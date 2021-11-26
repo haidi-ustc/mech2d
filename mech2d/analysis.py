@@ -125,7 +125,7 @@ class Analysis(object):
         refs+= "2D Mater. 6, 048001 (2019)"
         print(refs)
 
-    def summary(self):
+    def summary(self,fmt='jpg',dpi=100):
         box_center(ch="Elastic properties summary",fill='-',sp='-')
         print('')
         box_center(ch="Stiffness Tensor of %s system (N/m)"%(self.structure.formula.replace(" ","")),fill='-',sp='-')
@@ -143,7 +143,7 @@ class Analysis(object):
            prettyprint(self.S2d,precision=5)
            sepline()
            print('Writing orientation-dependent E and v ...')
-           self.get_EV()
+           self.get_EV(fmt=fmt,dpi=dpi)
         sepline()
         print("2D layer modulus (N/m)         :   %10.3f " % self.get_gamma())
         print("2D Young's modulus Y[10] (N/m) :   %10.3f " % self.get_Y10())
@@ -198,7 +198,7 @@ class Analysis(object):
         """
         return (self.C2d[0][0]*self.C2d[1][1]-self.C2d[0][1]**2)/self.C2d[1][1]
 
-    def get_EV(self,npoints=360,fname='EV_theta.dat'):
+    def get_EV(self,npoints=360,fname='EV_theta.dat',fmt='jpg',dpi=100):
         theta=np.linspace(0,2*pi,360)
         E=self.Y_zz/((cos(theta))**4+self.d2*(cos(theta))**2.*(sin(theta))**2+self.d3*(sin(theta))**4)
         V=(self.v_zz*(cos(theta))**4-self.d1*(cos(theta))**2.*(sin(theta))**2+self.v_zz*(sin(theta))**4)/ \
@@ -208,7 +208,7 @@ class Analysis(object):
         if self.plot:
            try:
               _plot=Plot(data=fname)
-              _plot.polar_plot_EV(fname=self.approach+'-EV.jpg')
+              _plot.polar_plot_EV(fname=self.approach+'-EV',fmt=fmt,dpi=dpi)
            except:
               print('WARNING: Plot failed, skip !!!')
 

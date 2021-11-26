@@ -503,7 +503,7 @@ class Elastic(MSONable):
 
         # unit convert 
         ana = Analysis(self.structure,C,plot=plot,approach=self.approach)
-        ana.summary()
+        ana.summary(fmt=fmt,dpi=dpi)
 
 #--------------------------------------------------------------------------------------------------
     def calc_elastic_constant_from_stress(self,poly_order,skip,numb_points,max_lag_strain,workdir,code,plot,fmt='jpg',dpi=100):
