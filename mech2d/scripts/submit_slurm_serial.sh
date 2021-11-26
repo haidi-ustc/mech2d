@@ -16,28 +16,30 @@ ulimit -s unlimited
 module load vasp/5.4.1
 
 # assume elc_energy or elc_stress folder in current directory
+ 
 path=`pwd`
-approach=elc_energy
+approach=elc_stress
 cd $path/$approach
 
 list1=`ls -d Def_*`
 cd $path/$approach/Def_1
-list2=`ls -d Def_1_*`
-cd $path
 
 for i in $list1
 do
     echo --------- Def_$i -----------
+    cd $path/$approach/$i
+    list2=`ls -d ${i}_*`
     for j in $list2
     do
-    # use the follow code to avoid duplicate submissions
-       if [ ! -f tag_finished ] ;then
-         # you may have to change the path of vasp command 
-         mpirun -np 48 /opt/soft/vasp/5.4.1/vasp_fix_z  1> runlog 2> errlog 
-         if test $? -ne 0; then touch tag_failure; echo Def_${i}_$j fail; fi 
-         touch tag_finished 
-         echo Def_${i}_$j ok
-       fi
-    done
+    cd $path/$approach/$i/$j
+
+# use the follow code to avoid duplicate submissions
+   if [ ! -f tag_finished ] ;then
+     # you may have to change the path of vasp command 
+     mpirun -np 48 /opt/soft/vasp/5.4.1/vasp_fix_z  1> runlog 2> errlog 
+     if test $? -ne 0; then touch tag_failure; echo $j fail; fi 
+     touch tag_finished 
+     echo  $j ok
+   fi
 done
-  
+done 
