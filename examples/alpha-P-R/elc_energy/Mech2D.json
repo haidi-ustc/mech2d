@@ -120,7 +120,7 @@
     "lattice": "R",
     "SOEC": 4,
     "verbose": false,
-    "workdir": "/home/wang/dev/mech2d/check/alpha-P-R/elc_energy",
+    "workdir": "/home/wang/dev/mech2d/examples/alpha-P-R/elc_energy",
     "numb_points": 9,
     "max_lag_strain": 0.02,
     "V0": 305.2544325771846
