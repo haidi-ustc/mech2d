@@ -207,8 +207,8 @@ class Analysis(object):
         np.savetxt(fname,res,fmt='%10.6f %10.6f %10.6f')
         if self.plot:
            try:
-              _plot=Plot(data=fname)
-              _plot.polar_plot_EV(fname=self.approach+'-EV',fmt=fmt,dpi=dpi)
+              _plot=Plot(data=fname,fmt=fmt,dpi=dpi)
+              _plot.polar_plot_EV(fname=self.approach+'-EV')
            except:
               print('WARNING: Plot failed, skip !!!')
 
