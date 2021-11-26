@@ -23,13 +23,15 @@ from mech2d.utils import prettyprint,box_center
 debug=False
 class Plot(object):
 
-    def __init__(self,data='result.json'):
+    def __init__(self,data='result.json',fmt='jpg',dpi=100):
         """
         Create an Plot obj. based on data
 
         Args: 
             data : Input data , should be a list or filename
         """
+        self.fmt=fmt
+        self.dpi=dpi
         if data=='result.json':
            self._data=self.load_result()      
         else:
@@ -62,7 +64,7 @@ class Plot(object):
         plt.rc('font', **font)
         self.fig = plt.figure(figsize=figsize) # width , heighth
     
-    def energy_strain_plot(self,font_dict={},figsize=(8,6),order=4,fname='Energy_Strain.jpg'):
+    def energy_strain_plot(self,font_dict={},figsize=(8,6),order=4,fname='Energy_Strain'):
         """
         plot energy strain figure 
 
@@ -92,10 +94,10 @@ class Plot(object):
         ax.plot(strain_vals,energy_vals,linestyle='--',alpha=0.5)
         ax.set_xlabel('Lagrangian strain (%)') 
         ax.set_ylabel('Energy (eV)')
-        plt.savefig(fname,format='jpg',dpi=300)
+        plt.savefig(fname+'.'+self.fmt,format=self.fmt,dpi=self.dpi)
         #plt.show()
  
-    def stress_strain_plot_nonefit(self,font_dict={},figsize=(16,16),fname='LStress_Strain.jpg'):
+    def stress_strain_plot_nonefit(self,font_dict={},figsize=(16,16),fname='LStress_Strain'):
         """
         plot stress strain figure without fitting (for stress-strain curve calculation)
 
@@ -129,9 +131,9 @@ class Plot(object):
                ax.set_ylabel('Energy (eV)')
             else:
                ax.set_ylabel('%s Stress (N/m)'%(labels[ii]))
-        plt.savefig(fname,format='jpg',dpi=300)
+        plt.savefig(fname+'.'+self.fmt,format=self.fmt,dpi=self.dpi)
 
-    def stress_strain_plot(self,font_dict={},figsize=(18,6),order=[3,3,3],fname='LStress_Strain.jpg'):
+    def stress_strain_plot(self,font_dict={},figsize=(18,6),order=[3,3,3],fname='LStress_Strain'):
         """
         plot energy strain figure 
 
@@ -165,10 +167,10 @@ class Plot(object):
             ax.plot(strain_vals,Y_vals,linestyle='--',alpha=0.5)
             ax.set_xlabel('Lagrangian strain (%)') 
             ax.set_ylabel('%s Stress (GPa)'%(labels[ii]))
-        plt.savefig(fname,format='jpg',dpi=300)
+        plt.savefig(fname+'.'+self.fmt,format=self.fmt,dpi=self.dpi)
         #plt.show()
 
-    def polar_plot_EV(self,font_dict={},figsize=(8,6),skip=[1,1,1],fname='EV.jpg'):
+    def polar_plot_EV(self,font_dict={},figsize=(8,6),skip=[1,1,1],fname='EV'):
         """
         plot the orientation dependent Young's Modulus and Poission's Ratio
 
@@ -218,7 +220,7 @@ class Plot(object):
         #ax.text(-0.25, 1.1, '('+string.ascii_lowercase[0]+')', transform=ax.transAxes,size=20, weight='bold')
         #ax1.text(-0.25, 1.1, '('+string.ascii_lowercase[1]+')', transform=ax1.transAxes,size=20, weight='bold')
         plt.tight_layout()
-        plt.savefig(fname,format='jpg',dpi=300)
+        plt.savefig(fname+'.'+self.fmt,format=self.fmt,dpi=self.dpi)
         
         #plt.show()
 
