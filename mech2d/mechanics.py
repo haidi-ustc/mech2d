@@ -28,6 +28,7 @@ from mech2d.utils import prettyprint,box_center
 from mech2d.analysis import Analysis
 from mech2d.plot import Plot
 from mech2d.logo import logo
+from mech2d.parser import vaspparser
 
 #--------------------------------------------------------------------------------------------------
 # Define the global variables
@@ -1050,17 +1051,47 @@ class Elastic(MSONable):
         #os.chdir(pwd)
         self.to(os.path.join(self.workdir,felastic),option={"numb_points":numb_points,"max_lag_strain":max_lag_strain,"V0":V0})
 
+def parsing_input(finput):
+    """
+    Parsing the structure and elastic tensor from file
+
+    Args:
+        finput (str): input file name
+    Returns:
+        structure (Obj): pymatgen Strcture obj.
+        C(matrix):  elastic tensor.
+    """
+    structure=None
+    C=None
+    if finput=='OUTCAR':
+       structure,C=vaspparser(finput)
+    elif finput=='sc.json':
+         ret=loadfn(finput)
+         structure=ret[0]
+         C=ret[1]
+    else: 
+         pass
+
+    return structure,C
+    
 #--------------------------------------------------------------------------------------------------
 def post_elastic(args):
     '''
     post process function entry point
     '''
     logo()
-    skip=args.skip
     dpi=args.dpi
     fmt=args.fmt
-    order=args.order
+    plot=args.plot
     properties = args.properties
+    finput=args.inputfile
+    if finput:
+       structure,C=parsing_input(finput)
+       ana = Analysis(structure,C,plot=plot,approach='energy')
+       ana.summary(fmt=fmt,dpi=dpi)
+       os._exit(0)
+    skip=args.skip
+    order=args.order
     workdir=os.path.join(os.getcwd(), args.properties+'_'+args.approach)
     elat=loadfn(os.path.join(workdir,felastic))
     if isinstance(elat,Elastic):
@@ -1081,7 +1112,6 @@ def post_elastic(args):
        print(args)
        elat.verbose=args.verbose
        print('order ==> %d'%order)
-    plot=args.plot
 
     if properties == 'elc':
        elat.calc_elastic_constant(poly_order=order,skip=skip,finput='input.yaml',plot=plot,fmt=fmt,dpi=dpi)

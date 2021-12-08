@@ -66,6 +66,7 @@ To see the options for the sub-commands, type "m2d sub-command -h".""")
     parser_post = subparsers.add_parser(
         "post", help="Post processing for elastic calculation.")
     parser_post.add_argument('-a','--approach', type=str, default='energy', choices=['stress', 'energy'],help="Support 'Energy' or 'Stress' approach.")
+    parser_post.add_argument('-i','--inputfile', type=str, default='', help="Parsing elastic constant tensor from input file")
     parser_post.add_argument('-p','--properties', type=str, default='elc', choices=['elc', 'ssc'], help="What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.")
     parser_post.add_argument('--skip', action="store_true" , help="Whether skip the data parsing ? if true, it means the Def_*_Energy.dat should be exists in corresponding folder. default value: False.")
     parser_post.add_argument('-o','--order', type=int, default=0, help="The order of polynomial for fitting. Default value: 4 for strain-stress approach and 3 for stress-strain method")
