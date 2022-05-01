@@ -210,7 +210,7 @@ class Plot(object):
  
         ax1.plot(theta_p, Vp, color="tab:green", lw=1, ls="--", marker='h',alpha=0.6, label=r"+ $\nu$")
         if len(Vn)>0:
-           ax1.plot(theta_n, Vn, color="tab:red", lw=0.1, marker='o',alpha=.5, label=r"- $\nu$")
+           ax1.plot(theta_n, np.abs(Vn), color="tab:red", lw=0.1, marker='o',alpha=.5, label=r"- $\nu$")
         angle = np.deg2rad(67.5)
         ax1.legend(loc="lower left", bbox_to_anchor=(.5 + np.cos(angle)/2, .5 + np.sin(angle)/2))
         #ax1.set_rmax(2)
