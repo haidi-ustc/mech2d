@@ -1093,11 +1093,10 @@ def post_elastic(args):
     skip=args.skip
     order=args.order
     workdir=os.path.join(os.getcwd(), args.properties+'_'+args.approach)
-    elat=loadfn(os.path.join(workdir,felastic))
-    if isinstance(elat,Elastic):
-       pass
-    else:
-       elat=Elastic.from_dict(elat)
+    delat=loadfn(os.path.join(workdir,felastic),cls=None)
+    delat['workdir']=workdir
+    dumpfn(delat,os.path.join(workdir,felastic),indent=4)
+    elat=Elastic.from_dict(delat)
     # if not set, then the value of order will be reset
     if order==0:
        if elat.approach == 'stress':
