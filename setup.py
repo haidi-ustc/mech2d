@@ -18,7 +18,7 @@ with open(path.join('mech2d', '_date.py'), 'w') as fp :
     fp.write('date = \'%s\'' % today)
 
 install_requires=[
-                  'pymatgen==2022.0.16',
+                  'pymatgen==2022.4.26',
                   'dpdispatcher==0.3.39',
                   'custodian==2021.2.8']
 
