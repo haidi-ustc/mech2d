@@ -139,7 +139,7 @@ m2d run -h
 ```
 it shows 
 ```
-usage: m2d run [-h] [-s {stress,energy}] [-p {elc,ssc}] [-v] input
+usage: m2d run [-h] [-a {stress,energy}] [-p {elc,ssc}] [--manual] [-v] input
 
 positional arguments:
   input                 input file for supplying information about DFT
@@ -148,11 +148,13 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -s {stress,energy}, --strategy {stress,energy}
-                        Support 'Energy' or 'Stress' strategy.
+  -a {stress,energy}, --approach {stress,energy}
+                        Support 'Energy' or 'Stress' approach.
   -p {elc,ssc}, --properties {elc,ssc}
                         What do you want to calcuation? elastic constant or
                         stress strain curve? default value: 'elc'.
+  --manual              manual model, only for generating the input files
+                        without runing
   -v, --verbose         print verbose information or not.
 ```
 
@@ -239,19 +241,27 @@ m2d post -h
 ```
 it shows 
 ```
-usage: m2d post [-h] [-a {stress,energy}] [-p {elc,ssc}] [--skip] [-o ORDER] [--plot] [-v]
+usage: m2d post [-h] [-a {stress,energy}] [-i INPUTFILE] [-p {elc,ssc}]
+                [--skip] [-o ORDER] [-f FMT] [-d DPI] [--plot] [-v]
 
 optional arguments:
   -h, --help            show this help message and exit
   -a {stress,energy}, --approach {stress,energy}
                         Support 'Energy' or 'Stress' approach.
+  -i INPUTFILE, --inputfile INPUTFILE
+                        Parsing elastic constant tensor from input file
   -p {elc,ssc}, --properties {elc,ssc}
-                        What do you want to calcuation? elastic constant or stress strain curve? default value: 'elc'.
-  --skip                Whether skip the data parsing ? if true, it means the Def_*_Energy.dat should be exists in
-                        corresponding folder. default value: False.
+                        What do you want to calcuation? elastic constant or
+                        stress strain curve? default value: 'elc'.
+  --skip                Whether skip the data parsing ? if true, it means the
+                        Def_*_Energy.dat should be exists in corresponding
+                        folder. default value: False.
   -o ORDER, --order ORDER
-                        The order of polynomial for fitting. Default value: 4 for strain-stress approach and 3 for stress-
-                        strain approach
+                        The order of polynomial for fitting. Default value: 4
+                        for strain-stress approach and 3 for stress-strain
+                        method
+  -f FMT, --fmt FMT     The format of output figure. Default value: .jpg
+  -d DPI, --dpi DPI     The resolution of output figure. Default value: 100
   --plot                plot the figures
   -v, --verbose         print verbose information or not.
 ```
