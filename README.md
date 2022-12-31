@@ -10,14 +10,14 @@ You may clone the source code from gitee
 ```bash
 git clone git@gitee.com:haidi-hfut/mech2d.git
 cd mech2d 
-python setup.py install
+pip install .
 ```
 or directly download the source code zip package and then install it
 ```bash
 wget https://gitee.com/haidi-hfut/mech2d/repository/archive/master.zip
 unzip mech2d.zip
 cd mech2d
-python setup.py install
+pip install .
 ```
 
 ## Usage
