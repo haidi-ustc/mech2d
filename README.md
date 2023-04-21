@@ -2,7 +2,7 @@
 
 mech2d is a python package that used to calculate the mechanics properties of two dimenional materials, including elstaic constant tensor, stress-strain curve and other relavant properties. mech2d is user friendly to generate deformed structures, submit DFT calculation tasks and process results.
 
-For more information, check the [document](https://mech2d.readthedocs.io/en/latest/)
+For more information, check the [document](https://mech2d.readthedocs.io/en/latest/) or [paper](https://www.preprints.org/manuscript/202304.0676/v1)
 
 ## Installation 
 
@@ -281,3 +281,6 @@ or for stress-strain calculation
 m2d post -a stress -p ssc --plot
 ```
 
+## How to Cite
+
+Wang, H.; Li, T.; Liu, X.; Zhu, W.; Chen, Z.; Li, Z.; Yang, J. mech2d: An Efficient Tool for High-Throughput Calculation of Mechanical Properties for Two-Dimensional Materials. Preprints.org 2023, 2023040676. https://doi.org/10.20944/preprints202304.0676.v1.
