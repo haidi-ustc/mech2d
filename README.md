@@ -283,4 +283,4 @@ m2d post -a stress -p ssc --plot
 
 ## How to Cite
 
-Wang, H.; Li, T.; Liu, X.; Zhu, W.; Chen, Z.; Li, Z.; Yang, J. mech2d: An Efficient Tool for High-Throughput Calculation of Mechanical Properties for Two-Dimensional Materials. Preprints.org 2023, 2023040676. https://doi.org/10.20944/preprints202304.0676.v1.
+Wang, H.; Li, T.; Liu, X.; Zhu, W.; Chen, Z.; Li, Z.; Yang, J. mech2d: An Efficient Tool for High-Throughput Calculation of Mechanical Properties for Two-Dimensional Materials. [Link](https://doi.org/10.3390/molecules28114337)
