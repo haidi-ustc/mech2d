@@ -264,6 +264,10 @@ code:
 
 > The input.yaml can also be setted by JSON format, however it seems that
   Yaml format is much easier to read.
+  
+> If you dont want to use the dpdispatcher to automatically submit the jobs,
+  you can run the command: `m2d run --manual  input.yaml` . In this way, only 
+  the input files of vasp tasks will be generated.
 
 
 * the **post** stage used analysis the result and plot the result. 
