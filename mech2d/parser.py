@@ -1,3 +1,4 @@
+import os
 import re
 import numpy as np
 from pymatgen.core import Structure
@@ -21,6 +22,9 @@ def vaspparser(finput="OUTCAR"):
     ).astype(float)
     iontype = [int(x)  for x in re.findall("ions per type\s*=\s*([0-9\s]*)", data)[0].split()     ]
     _species = re.findall("VRHFIN\s*=([a-zA-Z\s]*):", data)
+    if len(_species) ==0:
+       print("Make sure that VRHFIN information is in the OUTCAR. Try to remove the NWRITE=1 in INCAR. \nYou can use 'grep VRHFIN POTCAR' to obtain the element information and add the output\nto your OUTCAR")
+       os._exit(0)
     species=[]
     for n,el in zip(iontype,_species):
         species.extend([el]*n)
@@ -65,5 +69,8 @@ def vaspparser(finput="OUTCAR"):
     return structure, C.A
 
 if __name__=='__main__':
+   from utils import prettyprint
    st,C=vaspparser()
    print(st)
+   print('elastic constant')
+   prettyprint(C)

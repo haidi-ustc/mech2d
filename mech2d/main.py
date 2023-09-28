@@ -18,7 +18,7 @@ def get_version():
   try:
      from mech2d._version import version
   except:
-     version="Unknow" 
+     version="Unknown" 
   return version 
 
 def main():

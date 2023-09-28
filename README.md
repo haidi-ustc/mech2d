@@ -9,6 +9,18 @@ For more information, check the [document](https://mech2d.readthedocs.io/en/late
 You may clone the source code from gitee
 ```bash
 git clone git@gitee.com:haidi-hfut/mech2d.git
+```
+
+Before you install the mech2d. It is better to create a virtual python enviroment via conda
+
+```bash
+conda create -n mech2d python=3.10
+```
+
+After creating the virtual enviroment,  activate it and install the mech2d
+
+```
+conda activate mech2d
 cd mech2d 
 pip install .
 ```
@@ -18,6 +30,21 @@ wget https://gitee.com/haidi-hfut/mech2d/repository/archive/master.zip
 unzip mech2d.zip
 cd mech2d
 pip install .
+```
+## Method
+
+Please refer to [mech2d](https://doi.org/10.3390/molecules28114337)
+The polar plot of Young's modulus and Poisson's ratio is obtained by following equation:
+```
+v_{zz} & = \frac{C_{12}}{C_{22}} \\
+d_1 & = \frac{C_{11}}{C_{22}} + 1 - \frac{C_{11} C_{22} - C_{12}^2}{C_{22} C_{66}} \\
+d_2 & = -\left(2 \frac{C_{12}}{C_{22}} - \frac{C_{11} C_{22} - C_{12}^2}{C_{22} C_{66}}\right) \\
+d_3 & = \frac{C_{11}}{C_{22}} \\
+Y_{zz} & = \frac{C_{11} C_{22} - C_{12}^2}{C_{22}} \\
+\theta & \in [0, 2\pi] \text{ with 360 points} \\
+E(\theta) & = \frac{Y_{zz}}{\cos(\theta)^4 + d_2 \cos(\theta)^2 \sin(\theta)^2 + d_3 \sin(\theta)^4} \\
+V(\theta) & = \frac{v_{zz} \cos(\theta)^4 - d_1 \cos(\theta)^2 \sin(\theta)^2 + v_{zz} \sin(\theta)^4}{\cos(\theta)^4 + d_2 \cos(\theta)^2 \sin(\theta)^2 + d_3 \sin(\theta)^4}
+\en
 ```
 
 ## Usage

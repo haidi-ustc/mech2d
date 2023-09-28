@@ -118,7 +118,8 @@ class Analysis(object):
 
     def references(self):
         box_center(ch="References",fill='-',sp='-')
-        refs = "Phys. Rev. B 85, 125428 (2012)\n"
+        refs = "Molecules 28, 4337 (2023)\n"
+        refs+= "Phys. Rev. B 85, 125428 (2012)\n"
         refs+= "Acta Mechanica 223, 2591-2596 (2012)\n"
         refs+= "Comput. Mater. Sci. 68, 320 (2013)\n"
         refs+= "Mech. Mater. 64, 135 (2013)\n"
