@@ -8,7 +8,11 @@ For more information, check the [document](https://mech2d.readthedocs.io/en/late
 
 You may clone the source code from gitee
 ```bash
-git clone git@gitee.com:haidi-hfut/mech2d.git
+git clone git@gitee.com:haidi-hfut/mech2d.git 
+```
+or from 
+```bash
+git clone git@github.com:haidi-ustc/mech2d.git
 ```
 
 Before you install the mech2d. It is better to create a virtual python enviroment via conda
