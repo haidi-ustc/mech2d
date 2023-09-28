@@ -35,7 +35,6 @@ pip install .
 
 Please refer to [mech2d](https://doi.org/10.3390/molecules28114337)
 The polar plot of Young's modulus and Poisson's ratio is obtained by following equation:
-```
 $$
 v_{zz} & = \frac{C_{12}}{C_{22}} \\
 d_1 & = \frac{C_{11}}{C_{22}} + 1 - \frac{C_{11} C_{22} - C_{12}^2}{C_{22} C_{66}} \\
@@ -47,7 +46,6 @@ E(\theta) & = \frac{Y_{zz}}{\cos(\theta)^4 + d_2 \cos(\theta)^2 \sin(\theta)^2 +
 V(\theta) & = \frac{v_{zz} \cos(\theta)^4 - d_1 \cos(\theta)^2 \sin(\theta)^2 + v_{zz} \sin(\theta)^4}{\cos(\theta)^4 + d_2 \cos(\theta)^2 \sin(\theta)^2 + d_3 \sin(\theta)^4}
 \en
 $$
-```
 
 ## Usage
 
