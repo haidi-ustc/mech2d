@@ -27,7 +27,7 @@ def vaspparser(finput="OUTCAR"):
        os._exit(0)
     species=[]
     for n,el in zip(iontype,_species):
-        species.extend([el]*n)
+        species.extend([el.strip()]*n)
     structure = Structure(lattice, species, positions)
     # external pressure in kB -> GPa
     pressure = float(
