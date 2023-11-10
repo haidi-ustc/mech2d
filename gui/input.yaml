@@ -1,0 +1,54 @@
+---
+machine:
+  batch_type: Slurm
+  context_type: LocalContext
+  local_root: "./work"
+  remote_root: "./work"
+  remote_profile:
+    hostname: localhost
+    username: wang
+    port: 22
+    timeout: 10
+resources:
+  number_node: 1
+  cpu_per_node: 48
+  gpu_per_node: 0
+  queue_name: batch
+  task_max: 10
+  group_size: 1
+  custom_flags: 
+   - "ulimit -s unlimited"
+  module_list: 
+   - "vasp/5.4.1"
+  
+  #source_list:
+  # - "/opt/intel/parallel_studio_xe_2020.2.108/psxevars.sh intel64"
+  #envs:
+  #  PATH: "/opt/soft/vasp541:$PATH"
+tasks:
+  command: "mpirun -np 48 vasp_std"
+  task_work_path:
+  forward_files:
+  - INCAR
+  - KPOINTS
+  - POTCAR
+  - POSCAR
+  backward_files:
+  - runlog
+  - errlog
+  - OUTCAR
+  - OSZICAR
+  - vasprun.xml
+  - CONTCAR
+  outlog: runlog
+  errlog: errlog
+code:
+  name: vasp
+  input:
+    INCAR: "./INCAR"
+    #KPOINTS: "./KPOINTS"
+    KPOINTS:
+      kspacing: 5000
+      kgamma: false
+    POTCAR: "./POTCAR"
+    #vdw_kernel: vdw_kernel.bindat
